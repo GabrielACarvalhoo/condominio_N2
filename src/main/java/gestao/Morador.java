@@ -1,24 +1,9 @@
 package gestao;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Table;
-import jakarta.persistence.Id;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Column;
-
-@Entity
-@Table(name = "morador")
 public class Morador extends Pessoa {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(unique = true, length = 11)
     private String cpf;
 
-    @Column(name = "numero_unidade")
     private int numeroUnidade;
 
     public Morador() {
