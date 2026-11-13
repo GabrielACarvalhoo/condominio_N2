@@ -27,6 +27,18 @@
         <mapping class="gestao.persistence.entity.Ocorrencia"/>
         <mapping class="gestao.persistence.entity.Visitante"/>
         <mapping class="gestao.persistence.entity.AutorizacaoVisitante"/>
+        <mapping class="gestao.persistence.entity.Cargo"/>
+        <mapping class="gestao.persistence.entity.Funcionario"/>
+        <mapping class="gestao.persistence.entity.RegistroAcesso"/>
+        <mapping class="gestao.persistence.entity.EspacoComum"/>
+        <mapping class="gestao.persistence.entity.Reserva"/>
+        <mapping class="gestao.persistence.entity.Encomenda"/>
+        <mapping class="gestao.persistence.entity.Vaga"/>
+        <mapping class="gestao.persistence.entity.Veiculo"/>
+        <mapping class="gestao.persistence.entity.SolicitacaoManutencao"/>
+        <mapping class="gestao.persistence.entity.TaxaCondominial"/>
+        <mapping class="gestao.persistence.entity.Pagamento"/>
+
 
     </session-factory>
 </hibernate-configuration>

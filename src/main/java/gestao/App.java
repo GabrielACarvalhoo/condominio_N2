@@ -5,6 +5,7 @@ import java.util.List;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
+
 import org.hibernate.Session;
 
 import gestao.persistence.dao.UnidadeDAO;
@@ -20,8 +21,6 @@ import gestao.persistence.dao.OcorrenciaDAO;
 import gestao.persistence.entity.Ocorrencia;
 import gestao.persistence.entity.CategoriaOcorrencia;
 import gestao.persistence.entity.StatusOcorrencia;
-import gestao.persistence.dao.VisitanteDAO;
-import gestao.persistence.entity.Visitante;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
@@ -32,6 +31,40 @@ import gestao.persistence.entity.Visitante;
 import gestao.persistence.entity.AutorizacaoVisitante;
 import gestao.persistence.entity.StatusAutorizacao;
 
+import gestao.persistence.dao.CargoDAO;
+import gestao.persistence.entity.Cargo;
+import gestao.persistence.dao.FuncionarioDAO;
+import gestao.persistence.entity.Funcionario;
+import gestao.persistence.dao.RegistroAcessoDAO;
+import gestao.persistence.entity.RegistroAcesso;
+import gestao.persistence.dao.EspacoComumDAO;
+import gestao.persistence.entity.EspacoComum;
+import gestao.persistence.entity.Vaga;
+import gestao.persistence.entity.Veiculo;
+import gestao.persistence.entity.TipoVaga;
+import gestao.persistence.entity.TipoVeiculo;
+import gestao.persistence.entity.StatusVaga;
+
+import gestao.persistence.dao.ReservaDAO;
+import gestao.persistence.entity.Reserva;
+import gestao.persistence.entity.StatusReserva;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import gestao.persistence.dao.EncomendaDAO;
+import gestao.persistence.entity.Encomenda;
+import gestao.persistence.dao.VagaDAO;
+import gestao.persistence.dao.VeiculoDAO;
+import gestao.persistence.dao.SolicitacaoManutencaoDAO;
+import gestao.persistence.entity.SolicitacaoManutencao;
+import gestao.persistence.entity.PrioridadeManutencao;
+import gestao.persistence.entity.StatusSolicitacao;
+import gestao.persistence.dao.TaxaCondominialDAO;
+import gestao.persistence.dao.PagamentoDAO;
+
+import gestao.persistence.entity.TaxaCondominial;
+import gestao.persistence.entity.Pagamento;
+import gestao.persistence.entity.StatusTaxaCondominial;
+import gestao.persistence.entity.FormaPagamento;
 
 public class App {
 
@@ -45,6 +78,18 @@ public class App {
         OcorrenciaDAO ocorrenciaDAO = new OcorrenciaDAO();
         VisitanteDAO visitanteDAO = new VisitanteDAO();
         AutorizacaoVisitanteDAO autorizacaoVisitanteDAO = new AutorizacaoVisitanteDAO();
+        CargoDAO cargoDAO = new CargoDAO();
+        FuncionarioDAO funcionarioDAO = new FuncionarioDAO();
+        RegistroAcessoDAO registroAcessoDAO = new RegistroAcessoDAO();
+        EspacoComumDAO espacoComumDAO = new EspacoComumDAO();
+        ReservaDAO reservaDAO = new ReservaDAO();
+        EncomendaDAO encomendaDAO = new EncomendaDAO();
+        VagaDAO vagaDAO = new VagaDAO();
+        VeiculoDAO veiculoDAO = new VeiculoDAO();
+        SolicitacaoManutencaoDAO solicitacaoManutencaoDAO =
+                new SolicitacaoManutencaoDAO();
+        TaxaCondominialDAO taxaCondominialDAO = new TaxaCondominialDAO();
+        PagamentoDAO pagamentoDAO = new PagamentoDAO();
 
         boolean executando = true;
 
@@ -54,32 +99,69 @@ public class App {
 
                 System.out.println("\n========== GESTÃO CONDOMINIAL ==========");
                 System.out.println("\n--- MENU PRINCIPAL ---");
-                System.out.println("1 - Gestão Administrativa");
+                System.out.println("1 - Cadastros");
+                System.out.println("2 - Visitantes, Autorizações e Acessos");
+                System.out.println("3 - Ocorrências");
+                System.out.println("4 - Lazer e Reservas");
+                System.out.println("5 - Gestão de Encomendas");
+                System.out.println("6 - Gestão de Vagas e Veículos");
+                System.out.println("7 - Gestão de Manutenção");
+                System.out.println("8 - Gestão Financeira");
                 System.out.println("0 - Sair do sistema");
 
-                System.out.print("\nEscolha uma opção: ");
 
+                System.out.print("\nEscolha uma opção: ");
                 int opcao = lerOpcao(leitura);
 
                 switch (opcao) {
-
                     case 1:
-                        menuAdministrativo(
+                        menuCadastros(leitura, unidadeDAO, usuarioDAO,
+                                usuarioUnidadeDAO, cargoDAO, funcionarioDAO);
+                        break;
+                    case 2:
+                        menuVisitantesAutorizacoesAcessos(
                                 leitura,
+                                visitanteDAO,
                                 unidadeDAO,
                                 usuarioDAO,
-                                usuarioUnidadeDAO,
-                                ocorrenciaDAO,
-                                visitanteDAO,
-                                autorizacaoVisitanteDAO
+                                autorizacaoVisitanteDAO,
+                                registroAcessoDAO,
+                                funcionarioDAO
                         );
                         break;
-
+                    case 3:
+                        menuOcorrencias(leitura, unidadeDAO, usuarioDAO, ocorrenciaDAO);
+                        break;
+                    case 4:
+                        menuEspacos(leitura, espacoComumDAO, reservaDAO, usuarioDAO);
+                        break;
+                    case 5:
+                        menuEncomendas(leitura, encomendaDAO, unidadeDAO, funcionarioDAO);
+                        break;
+                    case 6:
+                        menuVagasVeiculos(leitura, vagaDAO, veiculoDAO, unidadeDAO);
+                        break;
+                    case 7:
+                        menuSolicitacoesManutencao(
+                                leitura,
+                                solicitacaoManutencaoDAO,
+                                usuarioDAO,
+                                unidadeDAO,
+                                funcionarioDAO
+                        );
+                        break;
+                    case 8:
+                        menuFinanceiro(
+                                leitura,
+                                taxaCondominialDAO,
+                                pagamentoDAO,
+                                unidadeDAO
+                        );
+                        break;
                     case 0:
                         System.out.println("\nEncerrando o sistema...");
                         executando = false;
                         break;
-
                     default:
                         System.out.println("Opção inválida!");
                 }
@@ -95,65 +177,35 @@ public class App {
     }
 
     // ==========================================
-    // MENU DE GESTÃO ADMINISTRATIVA
+    // MENU DE VISITANTES, AUTORIZAÇÕES E ACESSOS
     // ==========================================
 
-    private static void menuAdministrativo(
+    private static void menuVisitantesAutorizacoesAcessos(
             Scanner leitura,
+            VisitanteDAO visitanteDAO,
             UnidadeDAO unidadeDAO,
             UsuarioDAO usuarioDAO,
-            UsuarioUnidadeDAO usuarioUnidadeDAO,
-            OcorrenciaDAO ocorrenciaDAO,
-            VisitanteDAO visitanteDAO,
-            AutorizacaoVisitanteDAO autorizacaoVisitanteDAO) {
+            AutorizacaoVisitanteDAO autorizacaoVisitanteDAO,
+            RegistroAcessoDAO registroAcessoDAO,
+            FuncionarioDAO funcionarioDAO) {
 
         boolean voltar = false;
 
         while (!voltar) {
-
-            System.out.println("\n========== GESTÃO ADMINISTRATIVA ==========");
-            System.out.println("1 - Gestão de Unidades");
-            System.out.println("2 - Gestão de Usuários");
-            System.out.println("3 - Gestão de Vínculos");
-            System.out.println("4 - Gestão de Ocorrências");
-            System.out.println("5 - Gestão de Visitantes");
-            System.out.println("6 - Gestão de Autorizações de Visitantes");
+            System.out.println("\n========== VISITANTES E ACESSOS ==========");
+            System.out.println("1 - Gestão de Visitantes");
+            System.out.println("2 - Gestão de Autorizações");
+            System.out.println("3 - Controle de Acesso");
             System.out.println("0 - Voltar ao menu principal");
 
             System.out.print("\nEscolha uma opção: ");
 
-            int opcao = lerOpcao(leitura);
-
-            switch (opcao) {
-
+            switch (lerOpcao(leitura)) {
                 case 1:
-                    menuUnidades(leitura, unidadeDAO);
+                    menuVisitantes(leitura, visitanteDAO);
                     break;
 
                 case 2:
-                    menuUsuarios(leitura, usuarioDAO);
-                    break;
-
-                case 3:
-                    menuVinculos(
-                            leitura,
-                            unidadeDAO,
-                            usuarioDAO,
-                            usuarioUnidadeDAO
-                    );
-                    break;
-                case 4:
-                    menuOcorrencias(
-                            leitura,
-                            unidadeDAO,
-                            usuarioDAO,
-                            ocorrenciaDAO
-                    );
-                    break;
-                case 5:
-                    menuVisitantes(leitura, visitanteDAO);
-                    break;
-                case 6:
                     menuAutorizacoes(
                             leitura,
                             visitanteDAO,
@@ -162,6 +214,16 @@ public class App {
                             autorizacaoVisitanteDAO
                     );
                     break;
+
+                case 3:
+                    menuRegistrosAcesso(
+                            leitura,
+                            registroAcessoDAO,
+                            autorizacaoVisitanteDAO,
+                            funcionarioDAO
+                    );
+                    break;
+
                 case 0:
                     voltar = true;
                     break;
@@ -171,6 +233,780 @@ public class App {
             }
         }
     }
+
+    // ==========================================
+    // MENU DE CADASTROS
+    // ==========================================
+
+    private static void menuCadastros(
+            Scanner leitura,
+            UnidadeDAO unidadeDAO,
+            UsuarioDAO usuarioDAO,
+            UsuarioUnidadeDAO usuarioUnidadeDAO,
+            CargoDAO cargoDAO,
+            FuncionarioDAO funcionarioDAO) {
+
+        boolean voltar = false;
+        while (!voltar) {
+            System.out.println("\n========== CADASTROS ==========");
+            System.out.println("1 - Gestão de Usuários");
+            System.out.println("2 - Gestão de Unidades");
+            System.out.println("3 - Gestão de Vínculos");
+            System.out.println("4 - Gestão de Cargos");
+            System.out.println("5 - Gestão de Funcionários");
+            System.out.println("0 - Voltar ao menu principal");
+            System.out.print("\nEscolha uma opção: ");
+
+            switch (lerOpcao(leitura)) {
+                case 1:
+                    menuUsuarios(leitura, usuarioDAO);
+                    break;
+                case 2:
+                    menuUnidades(leitura, unidadeDAO);
+                    break;
+                case 3:
+                    menuVinculos(leitura, unidadeDAO, usuarioDAO, usuarioUnidadeDAO);
+                    break;
+                case 4:
+                    menuCargos(leitura, cargoDAO);
+                    break;
+                case 5:
+                    menuFuncionarios(leitura, funcionarioDAO, usuarioDAO, cargoDAO);
+                    break;
+                case 0:
+                    voltar = true;
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+    }
+
+    // ==========================================
+    // MENU DE GESTÃO DE CARGOS
+    // ==========================================
+
+    private static void menuCargos(
+            Scanner leitura,
+            CargoDAO cargoDAO) {
+
+        boolean voltar = false;
+
+        while (!voltar) {
+
+            System.out.println("\n===== GESTÃO DE CARGOS =====");
+            System.out.println("1 - Cadastrar cargo");
+            System.out.println("2 - Listar cargos");
+            System.out.println("3 - Consultar cargo por ID");
+            System.out.println("4 - Atualizar cargo");
+            System.out.println("5 - Excluir cargo");
+            System.out.println("0 - Voltar");
+
+            System.out.print("\nEscolha uma opção: ");
+
+            int opcao = lerOpcao(leitura);
+
+            switch (opcao) {
+
+                case 1:
+                    cadastrarCargo(leitura, cargoDAO);
+                    break;
+
+                case 2:
+                    listarCargos(cargoDAO);
+                    break;
+
+                case 3:
+                    consultarCargo(leitura, cargoDAO);
+                    break;
+
+                case 4:
+                    atualizarCargo(leitura, cargoDAO);
+                    break;
+
+                case 5:
+                    excluirCargo(leitura, cargoDAO);
+                    break;
+
+                case 0:
+                    voltar = true;
+                    break;
+
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+    }
+
+    // ==========================================
+    // CADASTRAR CARGO
+    // ==========================================
+
+    private static void cadastrarCargo(
+            Scanner leitura,
+            CargoDAO cargoDAO) {
+
+        System.out.println("\n--- CADASTRAR CARGO ---");
+
+        try {
+
+            System.out.print("Nome do cargo: ");
+            String nome = leitura.nextLine();
+
+            System.out.print("Descrição: ");
+            String descricao = leitura.nextLine();
+
+            if (nome.isBlank()) {
+                System.out.println("O nome do cargo é obrigatório!");
+                return;
+            }
+
+            Cargo cargo = new Cargo(
+                    nome,
+                    descricao.isBlank() ? null : descricao
+            );
+
+            cargoDAO.salvar(cargo);
+
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao cadastrar cargo: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // LISTAR CARGOS
+    // ==========================================
+
+    private static void listarCargos(CargoDAO cargoDAO) {
+
+        System.out.println("\n--- CARGOS CADASTRADOS ---");
+
+        try {
+
+            List<Cargo> cargos = cargoDAO.listarTodos();
+
+            if (cargos.isEmpty()) {
+                System.out.println("Nenhum cargo cadastrado.");
+                return;
+            }
+
+            for (Cargo cargo : cargos) {
+
+                System.out.println("------------------------------");
+                System.out.println("ID: " + cargo.getId());
+                System.out.println("Nome: " + cargo.getNome());
+                System.out.println("Descrição: " + cargo.getDescricao());
+            }
+
+            System.out.println("------------------------------");
+            System.out.println("Total de cargos: " + cargos.size());
+
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao listar cargos: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // CONSULTAR CARGO POR ID
+    // ==========================================
+
+    private static void consultarCargo(
+            Scanner leitura,
+            CargoDAO cargoDAO) {
+
+        try {
+
+            System.out.print("\nDigite o ID do cargo: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            Cargo cargo = cargoDAO.buscarPorId(id);
+
+            if (cargo == null) {
+                System.out.println("Cargo não encontrado!");
+                return;
+            }
+
+            System.out.println("\n--- DETALHES DO CARGO ---");
+            System.out.println("ID: " + cargo.getId());
+            System.out.println("Nome: " + cargo.getNome());
+            System.out.println("Descrição: " + cargo.getDescricao());
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao consultar cargo: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // ATUALIZAR CARGO
+    // ==========================================
+
+    private static void atualizarCargo(
+            Scanner leitura,
+            CargoDAO cargoDAO) {
+
+        System.out.println("\n--- ATUALIZAR CARGO ---");
+
+        listarCargos(cargoDAO);
+
+        try {
+
+            System.out.print("\nDigite o ID do cargo: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            Cargo cargo = cargoDAO.buscarPorId(id);
+
+            if (cargo == null) {
+                System.out.println("Cargo não encontrado!");
+                return;
+            }
+
+            System.out.println("\nCargo selecionado: " + cargo.getNome());
+
+            System.out.print("Novo nome: ");
+            String nome = leitura.nextLine();
+
+            if (nome.isBlank()) {
+                System.out.println("O nome do cargo é obrigatório!");
+                return;
+            }
+
+            System.out.print("Nova descrição: ");
+            String descricao = leitura.nextLine();
+
+            cargo.setNome(nome);
+            cargo.setDescricao(descricao.isBlank() ? null : descricao);
+
+            cargoDAO.atualizar(cargo);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao atualizar cargo: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // EXCLUIR CARGO
+    // ==========================================
+
+    private static void excluirCargo(
+            Scanner leitura,
+            CargoDAO cargoDAO) {
+
+        System.out.println("\n--- EXCLUIR CARGO ---");
+
+        listarCargos(cargoDAO);
+
+        try {
+
+            System.out.print("\nDigite o ID do cargo: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            Cargo cargo = cargoDAO.buscarPorId(id);
+
+            if (cargo == null) {
+                System.out.println("Cargo não encontrado!");
+                return;
+            }
+
+            System.out.println("\nCargo selecionado:");
+            System.out.println("Nome: " + cargo.getNome());
+            System.out.println("Descrição: " + cargo.getDescricao());
+
+            System.out.print("\nConfirma a exclusão? (S/N): ");
+            String confirmacao = leitura.nextLine();
+
+            if (confirmacao.equalsIgnoreCase("S")) {
+                cargoDAO.excluir(id);
+            } else {
+                System.out.println("Exclusão cancelada.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao excluir cargo: " + e.getMessage());
+            System.out.println(
+                    "Verifique se existem funcionários vinculados a este cargo."
+            );
+        }
+    }
+    private static String formatarData(LocalDate data) {
+        if (data == null) {
+            return "Não informada";
+        }
+
+        return data.format(DateTimeFormatter.ofPattern("dd/MM/yyyy"));
+    }
+
+    // ==========================================
+    // MENU DE GESTÃO DE FUNCIONÁRIOS
+    // ==========================================
+
+    private static void menuFuncionarios(
+            Scanner leitura,
+            FuncionarioDAO funcionarioDAO,
+            UsuarioDAO usuarioDAO,
+            CargoDAO cargoDAO) {
+
+        boolean voltar = false;
+
+        while (!voltar) {
+
+
+            System.out.println("\n===== GESTÃO DE FUNCIONÁRIOS =====");
+            System.out.println("1 - Cadastrar funcionário");
+            System.out.println("2 - Listar funcionários");
+            System.out.println("3 - Consultar funcionário por ID");
+            System.out.println("4 - Atualizar funcionário");
+            System.out.println("5 - Registrar demissão");
+            System.out.println("6 - Excluir funcionário");
+            System.out.println("0 - Voltar");
+
+            System.out.print("\nEscolha uma opção: ");
+
+            int opcao = lerOpcao(leitura);
+
+            switch (opcao) {
+
+                case 1:
+                    cadastrarFuncionario(
+                            leitura, funcionarioDAO, usuarioDAO, cargoDAO);
+                    break;
+
+                case 2:
+                    listarFuncionarios(funcionarioDAO);
+                    break;
+
+                case 3:
+                    consultarFuncionario(leitura, funcionarioDAO);
+                    break;
+
+                case 4:
+                    atualizarFuncionario(
+                            leitura, funcionarioDAO, usuarioDAO, cargoDAO);
+                    break;
+
+                case 5:
+                    registrarDemissao(leitura, funcionarioDAO);
+                    break;
+
+                case 6:
+                    excluirFuncionario(leitura, funcionarioDAO);
+                    break;
+
+                case 0:
+                    voltar = true;
+                    break;
+
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+    }
+
+    // ==========================================
+    // VERIFICAR SE USUÁRIO JÁ É FUNCIONÁRIO
+    // ==========================================
+
+    private static boolean usuarioJaPossuiFuncionario(
+            Integer idUsuario,
+            Integer idFuncionarioAtual,
+            FuncionarioDAO funcionarioDAO) {
+
+        List<Funcionario> funcionarios = funcionarioDAO.listarTodos();
+
+        for (Funcionario funcionario : funcionarios) {
+
+            boolean mesmoUsuario =
+                    funcionario.getUsuario().getId().equals(idUsuario);
+
+            boolean outroFuncionario =
+                    !funcionario.getId().equals(idFuncionarioAtual);
+
+            if (mesmoUsuario && outroFuncionario) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    // ==========================================
+    // CADASTRAR FUNCIONÁRIO
+    // ==========================================
+
+    private static void cadastrarFuncionario(
+            Scanner leitura,
+            FuncionarioDAO funcionarioDAO,
+            UsuarioDAO usuarioDAO,
+            CargoDAO cargoDAO) {
+
+        System.out.println("\n--- CADASTRAR FUNCIONÁRIO ---");
+
+        try {
+
+            System.out.println("\n--- USUÁRIOS DISPONÍVEIS ---");
+            listarUsuarios(usuarioDAO);
+
+            System.out.print("\nDigite o ID do usuário: ");
+            Integer idUsuario = Integer.parseInt(leitura.nextLine());
+
+            Usuario usuario = usuarioDAO.buscarPorId(idUsuario);
+
+            if (usuario == null) {
+                System.out.println("Usuário não encontrado!");
+                return;
+            }
+
+            if (usuarioJaPossuiFuncionario(
+                    idUsuario, null, funcionarioDAO)) {
+                System.out.println(
+                        "Este usuário já está cadastrado como funcionário!");
+                return;
+            }
+
+            System.out.println("\n--- CARGOS DISPONÍVEIS ---");
+            listarCargos(cargoDAO);
+
+            System.out.print("\nDigite o ID do cargo: ");
+            Integer idCargo = Integer.parseInt(leitura.nextLine());
+
+            Cargo cargo = cargoDAO.buscarPorId(idCargo);
+
+            if (cargo == null) {
+                System.out.println("Cargo não encontrado!");
+                return;
+            }
+
+            System.out.print("Data de admissão (dd/MM/yyyy): ");
+            String dataAdmissaoTexto = leitura.nextLine();
+
+            LocalDate dataAdmissao = dataAdmissaoTexto.isBlank()
+                    ? null
+                    : LocalDate.parse(
+                    dataAdmissaoTexto,
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            );
+
+            Funcionario funcionario = new Funcionario(
+                    usuario,
+                    cargo,
+                    dataAdmissao,
+                    null
+            );
+
+            funcionarioDAO.salvar(funcionario);
+
+            System.out.println("\nFuncionário cadastrado com sucesso!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe IDs numéricos válidos.");
+
+        } catch (java.time.format.DateTimeParseException e) {
+            System.out.println("Data inválida! Utilize dd/MM/yyyy.");
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao cadastrar funcionário: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // LISTAR FUNCIONÁRIOS
+    // ==========================================
+
+    private static void listarFuncionarios(
+            FuncionarioDAO funcionarioDAO) {
+
+        System.out.println("\n--- FUNCIONÁRIOS CADASTRADOS ---");
+
+        try {
+
+            List<Funcionario> funcionarios =
+                    funcionarioDAO.listarTodos();
+
+            if (funcionarios.isEmpty()) {
+                System.out.println("Nenhum funcionário cadastrado.");
+                return;
+            }
+
+            for (Funcionario funcionario : funcionarios) {
+
+                System.out.println("------------------------------");
+                System.out.println("ID: " + funcionario.getId());
+                System.out.println(
+                        "Usuário: " + funcionario.getUsuario().getNome());
+                System.out.println(
+                        "Cargo: " + funcionario.getCargo().getNome());
+                System.out.println(
+                        "Admissão: " + formatarData(funcionario.getDataAdmissao()));
+
+                System.out.println(
+                        "Demissão: " + formatarData(funcionario.getDataDemissao()));
+            }
+
+            System.out.println("------------------------------");
+            System.out.println(
+                    "Total de funcionários: " + funcionarios.size());
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao listar funcionários: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // CONSULTAR FUNCIONÁRIO POR ID
+    // ==========================================
+
+    private static void consultarFuncionario(
+            Scanner leitura,
+            FuncionarioDAO funcionarioDAO) {
+
+        try {
+
+            System.out.print("\nDigite o ID do funcionário: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            Funcionario funcionario = funcionarioDAO.buscarPorId(id);
+
+            if (funcionario == null) {
+                System.out.println("Funcionário não encontrado!");
+                return;
+            }
+
+            System.out.println("\n--- DETALHES DO FUNCIONÁRIO ---");
+            System.out.println("ID: " + funcionario.getId());
+            System.out.println(
+                    "Usuário: " + funcionario.getUsuario().getNome());
+            System.out.println(
+                    "Cargo: " + funcionario.getCargo().getNome());
+            System.out.println(
+                    "Data de admissão: " + formatarData(funcionario.getDataAdmissao()));
+
+            System.out.println(
+                    "Data de demissão: " + formatarData(funcionario.getDataDemissao()));
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao consultar funcionário: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // ATUALIZAR FUNCIONÁRIO
+    // ==========================================
+
+
+    private static void atualizarFuncionario(
+            Scanner leitura,
+            FuncionarioDAO funcionarioDAO,
+            UsuarioDAO usuarioDAO,
+            CargoDAO cargoDAO) {
+
+        System.out.println("\n--- ATUALIZAR FUNCIONÁRIO ---");
+
+        listarFuncionarios(funcionarioDAO);
+
+        try {
+
+            System.out.print("\nDigite o ID do funcionário: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            Funcionario funcionario = funcionarioDAO.buscarPorId(id);
+
+            if (funcionario == null) {
+                System.out.println("Funcionário não encontrado!");
+                return;
+            }
+
+            System.out.println("\nFuncionário selecionado:");
+            System.out.println("Usuário: " + funcionario.getUsuario().getNome());
+            System.out.println("Cargo: " + funcionario.getCargo().getNome());
+
+            System.out.println("\n--- USUÁRIOS DISPONÍVEIS ---");
+            listarUsuarios(usuarioDAO);
+
+            System.out.print("\nNovo ID do usuário: ");
+            Integer idUsuario = Integer.parseInt(leitura.nextLine());
+
+            Usuario usuario = usuarioDAO.buscarPorId(idUsuario);
+
+            if (usuario == null) {
+                System.out.println("Usuário não encontrado!");
+                return;
+            }
+
+            if (usuarioJaPossuiFuncionario(
+                    idUsuario, id, funcionarioDAO)) {
+                System.out.println(
+                        "Este usuário já está vinculado a outro funcionário!");
+                return;
+            }
+
+            System.out.println("\n--- CARGOS DISPONÍVEIS ---");
+            listarCargos(cargoDAO);
+
+            System.out.print("\nNovo ID do cargo: ");
+            Integer idCargo = Integer.parseInt(leitura.nextLine());
+
+            Cargo cargo = cargoDAO.buscarPorId(idCargo);
+
+            if (cargo == null) {
+                System.out.println("Cargo não encontrado!");
+                return;
+            }
+
+            funcionario.setUsuario(usuario);
+            funcionario.setCargo(cargo);
+
+            funcionarioDAO.atualizar(funcionario);
+
+            System.out.println("\nFuncionário atualizado com sucesso!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe IDs numéricos válidos.");
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao atualizar funcionário: " + e.getMessage());
+        }
+    }
+
+
+
+    private static void registrarDemissao(
+            Scanner leitura,
+            FuncionarioDAO funcionarioDAO) {
+
+        System.out.println("\n--- REGISTRAR DEMISSÃO ---");
+
+        listarFuncionarios(funcionarioDAO);
+
+        try {
+
+            System.out.print("\nDigite o ID do funcionário: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            Funcionario funcionario = funcionarioDAO.buscarPorId(id);
+
+            if (funcionario == null) {
+                System.out.println("Funcionário não encontrado!");
+                return;
+            }
+
+            System.out.println("\nFuncionário selecionado:");
+            System.out.println("Usuário: " + funcionario.getUsuario().getNome());
+            System.out.println("Cargo: " + funcionario.getCargo().getNome());
+            System.out.println(
+                    "Admissão: " + formatarData(funcionario.getDataAdmissao()));
+
+            System.out.println(
+                    "Demissão: " + formatarData(funcionario.getDataDemissao()));
+
+            if (funcionario.getDataDemissao() != null) {
+                System.out.println(
+                        "\nEste funcionário já possui uma data de demissão!");
+                return;
+            }
+
+            System.out.print(
+                    "\nData de demissão (dd/MM/yyyy): ");
+
+            String dataTexto = leitura.nextLine();
+
+            LocalDate dataDemissao = LocalDate.parse(
+                    dataTexto,
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy")
+            );
+
+            if (funcionario.getDataAdmissao() != null
+                    && dataDemissao.isBefore(funcionario.getDataAdmissao())) {
+                System.out.println(
+                        "A data de demissão não pode ser anterior à admissão!");
+                return;
+            }
+
+            funcionario.setDataDemissao(dataDemissao);
+
+            funcionarioDAO.atualizar(funcionario);
+
+            System.out.println(
+                    "\nDemissão registrada com sucesso!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (java.time.format.DateTimeParseException e) {
+            System.out.println("Data inválida! Utilize dd/MM/yyyy.");
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao registrar demissão: " + e.getMessage());
+        }
+    }
+
+
+    // ==========================================
+    // EXCLUIR FUNCIONÁRIO
+    // ==========================================
+
+    private static void excluirFuncionario(
+            Scanner leitura,
+            FuncionarioDAO funcionarioDAO) {
+
+        System.out.println("\n--- EXCLUIR FUNCIONÁRIO ---");
+
+        listarFuncionarios(funcionarioDAO);
+
+        try {
+
+            System.out.print("\nDigite o ID do funcionário: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            Funcionario funcionario = funcionarioDAO.buscarPorId(id);
+
+            if (funcionario == null) {
+                System.out.println("Funcionário não encontrado!");
+                return;
+            }
+
+            System.out.println("\nFuncionário selecionado:");
+            System.out.println(
+                    "Usuário: " + funcionario.getUsuario().getNome());
+            System.out.println(
+                    "Cargo: " + funcionario.getCargo().getNome());
+
+            System.out.print("\nConfirma a exclusão? (S/N): ");
+            String confirmacao = leitura.nextLine();
+
+            if (confirmacao.equalsIgnoreCase("S")) {
+                funcionarioDAO.excluir(id);
+                System.out.println(
+                        "Funcionário excluído com sucesso!");
+            } else {
+                System.out.println("Exclusão cancelada.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao excluir funcionário: " + e.getMessage());
+        }
+    }
+
+
 
     // ==========================================
     // MENU DE MORADORES E UNIDADES
@@ -2223,6 +3059,557 @@ public class App {
         }
     }
 
+
+    // ==========================================
+    // MENU DE REGISTROS DE ACESSO
+    // ==========================================
+
+    private static void menuRegistrosAcesso(
+            Scanner leitura,
+            RegistroAcessoDAO registroAcessoDAO,
+            AutorizacaoVisitanteDAO autorizacaoDAO,
+            FuncionarioDAO funcionarioDAO) {
+
+        boolean voltar = false;
+
+        while (!voltar) {
+
+            System.out.println("\n===== GESTÃO DE REGISTROS DE ACESSO =====");
+            System.out.println("1 - Registrar entrada de visitante");
+            System.out.println("2 - Listar registros de acesso");
+            System.out.println("3 - Consultar registro por ID");
+            System.out.println("4 - Registrar saída de visitante");
+            System.out.println("5 - Atualizar observações");
+            System.out.println("6 - Excluir registro");
+            System.out.println("0 - Voltar");
+
+            System.out.print("\nEscolha uma opção: ");
+
+            int opcao = lerOpcao(leitura);
+
+            switch (opcao) {
+
+                case 1:
+                    registrarEntrada(
+                            leitura, registroAcessoDAO,
+                            autorizacaoDAO, funcionarioDAO);
+                    break;
+
+                case 2:
+                    listarRegistrosAcesso(registroAcessoDAO);
+                    break;
+
+                case 3:
+                    consultarRegistroAcesso(leitura, registroAcessoDAO);
+                    break;
+
+                case 4:
+                    registrarSaida(leitura, registroAcessoDAO);
+                    break;
+
+                case 5:
+                    atualizarObservacoesAcesso(leitura, registroAcessoDAO);
+                    break;
+
+                case 6:
+                    excluirRegistroAcesso(leitura, registroAcessoDAO);
+                    break;
+
+                case 0:
+                    voltar = true;
+                    break;
+
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+    }
+
+    // ==========================================
+    // REGISTRAR ENTRADA
+    // ==========================================
+
+    private static void registrarEntrada(
+            Scanner leitura,
+            RegistroAcessoDAO registroAcessoDAO,
+            AutorizacaoVisitanteDAO autorizacaoDAO,
+            FuncionarioDAO funcionarioDAO) {
+
+        System.out.println("\n--- REGISTRAR ENTRADA ---");
+
+        try {
+
+            List<AutorizacaoVisitante> autorizacoes =
+                    autorizacaoDAO.listarTodos();
+
+            List<RegistroAcesso> registros =
+                    registroAcessoDAO.listarTodos();
+
+            LocalDateTime agora = LocalDateTime.now();
+
+            System.out.println("\n--- AUTORIZAÇÕES DISPONÍVEIS ---");
+
+            boolean encontrouAutorizacao = false;
+
+            for (AutorizacaoVisitante autorizacao : autorizacoes) {
+
+                boolean aprovada =
+                        autorizacao.getStatus() == StatusAutorizacao.APROVADA;
+
+                boolean dentroDaValidade =
+                        autorizacao.getInicioValidade() != null
+                                && !agora.isBefore(autorizacao.getInicioValidade())
+                                && (autorizacao.getFimValidade() == null
+                                || !agora.isAfter(autorizacao.getFimValidade()));
+
+                int quantidadeUtilizada = 0;
+
+                for (RegistroAcesso registro : registros) {
+                    if (registro.getAutorizacao().getId()
+                            .equals(autorizacao.getId())) {
+                        quantidadeUtilizada++;
+                    }
+                }
+
+                boolean possuiAcessosDisponiveis =
+                        autorizacao.getQuantidadeAcessos() == null
+                                || quantidadeUtilizada
+                                < autorizacao.getQuantidadeAcessos();
+
+                if (aprovada && dentroDaValidade
+                        && possuiAcessosDisponiveis) {
+
+                    encontrouAutorizacao = true;
+
+                    System.out.println("------------------------------");
+                    System.out.println("ID: " + autorizacao.getId());
+                    System.out.println("Visitante: "
+                            + autorizacao.getVisitante().getNome());
+                    System.out.println("Unidade: "
+                            + autorizacao.getUnidade().getBloco()
+                            + "-"
+                            + autorizacao.getUnidade().getNumero());
+                    System.out.println("Acessos utilizados: "
+                            + quantidadeUtilizada);
+                    System.out.println("Limite: "
+                            + (autorizacao.getQuantidadeAcessos() == null
+                            ? "Ilimitado"
+                            : autorizacao.getQuantidadeAcessos()));
+                }
+            }
+
+            if (!encontrouAutorizacao) {
+                System.out.println(
+                        "Nenhuma autorização aprovada e disponível no momento.");
+                return;
+            }
+
+            System.out.print("\nDigite o ID da autorização: ");
+            Integer idAutorizacao =
+                    Integer.parseInt(leitura.nextLine());
+
+            AutorizacaoVisitante autorizacao =
+                    autorizacaoDAO.buscarPorId(idAutorizacao);
+
+            if (autorizacao == null
+                    || autorizacao.getStatus() != StatusAutorizacao.APROVADA) {
+
+                System.out.println("Autorização inválida ou não aprovada!");
+                return;
+            }
+
+            boolean dentroDaValidade =
+                    autorizacao.getInicioValidade() != null
+                            && !agora.isBefore(autorizacao.getInicioValidade())
+                            && (autorizacao.getFimValidade() == null
+                            || !agora.isAfter(autorizacao.getFimValidade()));
+
+            if (!dentroDaValidade) {
+                System.out.println("A autorização está fora do período de validade!");
+                return;
+            }
+
+            int quantidadeUtilizada = 0;
+
+            for (RegistroAcesso registro : registros) {
+                if (registro.getAutorizacao().getId()
+                        .equals(autorizacao.getId())) {
+                    quantidadeUtilizada++;
+                }
+            }
+
+            if (autorizacao.getQuantidadeAcessos() != null
+                    && quantidadeUtilizada >= autorizacao.getQuantidadeAcessos()) {
+
+                System.out.println("Limite de acessos desta autorização atingido!");
+                return;
+            }
+
+            System.out.println("\n--- FUNCIONÁRIOS DA PORTARIA ---");
+
+            List<Funcionario> funcionarios =
+                    funcionarioDAO.listarTodos();
+
+            boolean encontrouFuncionario = false;
+
+            for (Funcionario funcionario : funcionarios) {
+
+                if (funcionario.getDataDemissao() == null) {
+
+                    encontrouFuncionario = true;
+
+                    System.out.println("------------------------------");
+                    System.out.println("ID: " + funcionario.getId());
+                    System.out.println("Nome: "
+                            + funcionario.getUsuario().getNome());
+                    System.out.println("Cargo: "
+                            + funcionario.getCargo().getNome());
+                }
+            }
+
+            if (!encontrouFuncionario) {
+                System.out.println("Nenhum funcionário ativo cadastrado.");
+            }
+
+            System.out.print(
+                    "\nID do funcionário da portaria (0 para não informar): ");
+
+            Integer idFuncionario =
+                    Integer.parseInt(leitura.nextLine());
+
+            Funcionario funcionarioPortaria = null;
+
+            if (idFuncionario != 0) {
+
+                funcionarioPortaria =
+                        funcionarioDAO.buscarPorId(idFuncionario);
+
+                if (funcionarioPortaria == null
+                        || funcionarioPortaria.getDataDemissao() != null) {
+
+                    System.out.println("Funcionário inexistente ou inativo!");
+                    return;
+                }
+            }
+
+            System.out.print("Observações: ");
+            String observacoes = leitura.nextLine();
+
+            RegistroAcesso registro = new RegistroAcesso();
+
+            registro.setAutorizacao(autorizacao);
+            registro.setFuncionarioPortaria(funcionarioPortaria);
+            registro.setEntrada(agora);
+            registro.setSaida(null);
+            registro.setObservacoes(
+                    observacoes.isBlank() ? null : observacoes);
+
+            registroAcessoDAO.salvar(registro);
+
+            System.out.println("\nEntrada registrada com sucesso!");
+            System.out.println("Visitante: "
+                    + autorizacao.getVisitante().getNome());
+            System.out.println("Entrada: "
+                    + agora.format(DateTimeFormatter.ofPattern(
+                    "dd/MM/yyyy HH:mm")));
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Informe IDs numéricos válidos.");
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao registrar entrada: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // LISTAR REGISTROS DE ACESSO
+    // ==========================================
+
+    private static void listarRegistrosAcesso(
+            RegistroAcessoDAO registroAcessoDAO) {
+
+        System.out.println("\n--- REGISTROS DE ACESSO ---");
+
+        try {
+
+            List<RegistroAcesso> registros =
+                    registroAcessoDAO.listarTodos();
+
+            if (registros.isEmpty()) {
+                System.out.println("Nenhum registro de acesso encontrado.");
+                return;
+            }
+
+            DateTimeFormatter formato =
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+            for (RegistroAcesso registro : registros) {
+
+                System.out.println("------------------------------");
+                System.out.println("ID: " + registro.getId());
+
+                System.out.println("Visitante: "
+                        + registro.getAutorizacao()
+                        .getVisitante().getNome());
+
+                System.out.println("Unidade: "
+                        + registro.getAutorizacao()
+                        .getUnidade().getBloco()
+                        + "-"
+                        + registro.getAutorizacao()
+                        .getUnidade().getNumero());
+
+                System.out.println("Funcionário: "
+                        + (registro.getFuncionarioPortaria() == null
+                        ? "Não informado"
+                        : registro.getFuncionarioPortaria()
+                        .getUsuario().getNome()));
+
+                System.out.println("Entrada: "
+                        + registro.getEntrada().format(formato));
+
+                System.out.println("Saída: "
+                        + (registro.getSaida() == null
+                        ? "Ainda não registrada"
+                        : registro.getSaida().format(formato)));
+
+                System.out.println("Observações: "
+                        + registro.getObservacoes());
+            }
+
+            System.out.println("------------------------------");
+            System.out.println("Total de registros: " + registros.size());
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao listar registros: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // CONSULTAR REGISTRO POR ID
+    // ==========================================
+
+    private static void consultarRegistroAcesso(
+            Scanner leitura,
+            RegistroAcessoDAO registroAcessoDAO) {
+
+        try {
+
+            System.out.print("\nDigite o ID do registro: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            RegistroAcesso registro =
+                    registroAcessoDAO.buscarPorId(id);
+
+            if (registro == null) {
+                System.out.println("Registro não encontrado!");
+                return;
+            }
+
+            DateTimeFormatter formato =
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+            System.out.println("\n--- DETALHES DO REGISTRO ---");
+            System.out.println("ID: " + registro.getId());
+
+            System.out.println("Visitante: "
+                    + registro.getAutorizacao()
+                    .getVisitante().getNome());
+
+            System.out.println("Unidade: "
+                    + registro.getAutorizacao()
+                    .getUnidade().getBloco()
+                    + "-"
+                    + registro.getAutorizacao()
+                    .getUnidade().getNumero());
+
+            System.out.println("Funcionário: "
+                    + (registro.getFuncionarioPortaria() == null
+                    ? "Não informado"
+                    : registro.getFuncionarioPortaria()
+                    .getUsuario().getNome()));
+
+            System.out.println("Entrada: "
+                    + registro.getEntrada().format(formato));
+
+            System.out.println("Saída: "
+                    + (registro.getSaida() == null
+                    ? "Ainda não registrada"
+                    : registro.getSaida().format(formato)));
+
+            System.out.println("Observações: "
+                    + registro.getObservacoes());
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao consultar registro: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // REGISTRAR SAÍDA
+    // ==========================================
+
+    private static void registrarSaida(
+            Scanner leitura,
+            RegistroAcessoDAO registroAcessoDAO) {
+
+        System.out.println("\n--- REGISTRAR SAÍDA ---");
+
+        try {
+
+            listarRegistrosAcesso(registroAcessoDAO);
+
+            System.out.print("\nDigite o ID do registro: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            RegistroAcesso registro =
+                    registroAcessoDAO.buscarPorId(id);
+
+            if (registro == null) {
+                System.out.println("Registro não encontrado!");
+                return;
+            }
+
+            if (registro.getSaida() != null) {
+                System.out.println("A saída deste visitante já foi registrada!");
+                return;
+            }
+
+            LocalDateTime agora = LocalDateTime.now();
+
+            registro.setSaida(agora);
+
+            registroAcessoDAO.atualizar(registro);
+
+            System.out.println("\nSaída registrada com sucesso!");
+            System.out.println("Horário: "
+                    + agora.format(DateTimeFormatter.ofPattern(
+                    "dd/MM/yyyy HH:mm")));
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao registrar saída: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // ATUALIZAR OBSERVAÇÕES
+    // ==========================================
+
+    private static void atualizarObservacoesAcesso(
+            Scanner leitura,
+            RegistroAcessoDAO registroAcessoDAO) {
+
+        System.out.println("\n--- ATUALIZAR OBSERVAÇÕES ---");
+
+        try {
+
+            System.out.print("Digite o ID do registro: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            RegistroAcesso registro =
+                    registroAcessoDAO.buscarPorId(id);
+
+            if (registro == null) {
+                System.out.println("Registro não encontrado!");
+                return;
+            }
+
+            System.out.println("Visitante: "
+                    + registro.getAutorizacao()
+                    .getVisitante().getNome());
+
+            System.out.println("Observações atuais: "
+                    + registro.getObservacoes());
+
+            System.out.print("Novas observações (ENTER para limpar): ");
+            String observacoes = leitura.nextLine();
+
+            registro.setObservacoes(
+                    observacoes.isBlank() ? null : observacoes);
+
+            registroAcessoDAO.atualizar(registro);
+
+            System.out.println("Observações atualizadas com sucesso!");
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao atualizar observações: "
+                    + e.getMessage());
+        }
+    }
+
+    // ==========================================
+    // EXCLUIR REGISTRO DE ACESSO
+    // ==========================================
+
+    private static void excluirRegistroAcesso(
+            Scanner leitura,
+            RegistroAcessoDAO registroAcessoDAO) {
+
+        System.out.println("\n--- EXCLUIR REGISTRO DE ACESSO ---");
+
+        try {
+
+            listarRegistrosAcesso(registroAcessoDAO);
+
+            System.out.print("\nDigite o ID do registro: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            RegistroAcesso registro =
+                    registroAcessoDAO.buscarPorId(id);
+
+            if (registro == null) {
+                System.out.println("Registro não encontrado!");
+                return;
+            }
+
+            System.out.println("\nRegistro selecionado:");
+            System.out.println("Visitante: "
+                    + registro.getAutorizacao()
+                    .getVisitante().getNome());
+
+            System.out.print("\nConfirma a exclusão? (S/N): ");
+            String confirmacao = leitura.nextLine();
+
+            if (confirmacao.equalsIgnoreCase("S")) {
+
+                registroAcessoDAO.excluir(id);
+
+                System.out.println("Registro excluído com sucesso!");
+
+            } else {
+
+                System.out.println("Exclusão cancelada.");
+            }
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao excluir registro: " + e.getMessage());
+        }
+    }
+
+
     // ==========================================
     // LEITURA DAS OPÇÕES DOS MENUS
     // ==========================================
@@ -2238,4 +3625,1779 @@ public class App {
             return -1;
         }
     }
+
+    private static void menuEspacos(
+            Scanner leitura,
+            EspacoComumDAO espacoComumDAO,
+            ReservaDAO reservaDAO,
+            UsuarioDAO usuarioDAO) {
+
+        boolean voltar = false;
+
+        while (!voltar) {
+
+            System.out.println("\n===== LAZER E RESERVAS =====");
+            System.out.println("1 - Cadastrar espaço");
+            System.out.println("2 - Listar espaços");
+            System.out.println("3 - Solicitar reserva");
+            System.out.println("4 - Listar reservas");
+            System.out.println("5 - Aprovar ou cancelar reserva");
+            System.out.println("6 - Excluir reserva");
+            System.out.println("0 - Voltar");
+
+            System.out.print("\nEscolha uma opção: ");
+
+            switch (lerOpcao(leitura)) {
+                case 1:
+                    cadastrarEspaco(leitura, espacoComumDAO);
+                    break;
+                case 2:
+                    listarEspacos(espacoComumDAO);
+                    break;
+                case 3:
+                    solicitarReserva(leitura, espacoComumDAO, reservaDAO, usuarioDAO);
+                    break;
+                case 4:
+                    listarReservas(reservaDAO);
+                    break;
+                case 5:
+                    gerenciarReserva(leitura, reservaDAO);
+                    break;
+                case 6:
+                    excluirReserva(leitura, reservaDAO);
+                    break;
+                case 0:
+                    voltar = true;
+                    break;
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+    }
+
+    private static void cadastrarEspaco(
+            Scanner leitura,
+            EspacoComumDAO espacoComumDAO) {
+
+        System.out.println("\n--- CADASTRAR ESPAÇO ---");
+
+        try {
+
+            System.out.print("Nome do espaço: ");
+            String nome = leitura.nextLine();
+
+            System.out.print("Descrição: ");
+            String descricao = leitura.nextLine();
+
+            System.out.print("Capacidade de pessoas: ");
+            int capacidade = Integer.parseInt(leitura.nextLine());
+
+            System.out.print("Regras de utilização: ");
+            String regras = leitura.nextLine();
+
+            if (nome.isBlank() || capacidade <= 0) {
+                System.out.println("Informe um nome e uma capacidade válida!");
+                return;
+            }
+
+            EspacoComum espaco = new EspacoComum();
+
+            espaco.setNome(nome);
+            espaco.setDescricao(descricao.isBlank() ? null : descricao);
+            espaco.setCapacidade(capacidade);
+            espaco.setRegras(regras.isBlank() ? null : regras);
+            espaco.setAtivo(true);
+
+            espacoComumDAO.salvar(espaco);
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Informe uma capacidade numérica válida.");
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao cadastrar espaço: " + e.getMessage());
+        }
+    }
+
+    private static void listarEspacos(EspacoComumDAO espacoComumDAO) {
+
+        System.out.println("\n--- ESPAÇOS CADASTRADOS ---");
+
+        try {
+
+            List<EspacoComum> espacos = espacoComumDAO.listarTodos();
+
+            if (espacos.isEmpty()) {
+                System.out.println("Nenhum espaço cadastrado.");
+                return;
+            }
+
+            for (EspacoComum espaco : espacos) {
+
+                System.out.println("------------------------------");
+                System.out.println("ID: " + espaco.getId());
+                System.out.println("Nome: " + espaco.getNome());
+                System.out.println("Capacidade: " + espaco.getCapacidade());
+                System.out.println("Descrição: " + espaco.getDescricao());
+                System.out.println("Regras: " + espaco.getRegras());
+                System.out.println(
+                        "Status: " + (espaco.getAtivo() ? "Ativo" : "Inativo")
+                );
+            }
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao listar espaços: " + e.getMessage());
+        }
+    }
+
+
+    private static void solicitarReserva(
+            Scanner leitura,
+            EspacoComumDAO espacoComumDAO,
+            ReservaDAO reservaDAO,
+            UsuarioDAO usuarioDAO) {
+
+        System.out.println("\n--- SOLICITAR RESERVA ---");
+
+        try {
+            List<EspacoComum> espacos = espacoComumDAO.listarTodos();
+
+            System.out.println("\nESPAÇOS DISPONÍVEIS:");
+
+            for (EspacoComum espaco : espacos) {
+                if (Boolean.TRUE.equals(espaco.getAtivo())) {
+                    System.out.println(
+                            "ID: " + espaco.getId()
+                                    + " | " + espaco.getNome()
+                                    + " | Capacidade: " + espaco.getCapacidade()
+                    );
+                }
+            }
+
+            System.out.print("\nID do espaço: ");
+            int idEspaco = Integer.parseInt(leitura.nextLine());
+
+            System.out.print("ID do usuário solicitante: ");
+            int idUsuario = Integer.parseInt(leitura.nextLine());
+
+            System.out.print("Data e hora de início (dd/MM/yyyy HH:mm): ");
+            LocalDateTime inicio = LocalDateTime.parse(
+                    leitura.nextLine(),
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+            );
+
+            System.out.print("Data e hora de término (dd/MM/yyyy HH:mm): ");
+            LocalDateTime fim = LocalDateTime.parse(
+                    leitura.nextLine(),
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
+            );
+
+            System.out.print("Quantidade de pessoas: ");
+            int quantidade = Integer.parseInt(leitura.nextLine());
+
+            System.out.print("Observações: ");
+            String observacoes = leitura.nextLine();
+
+            // Verifica se o usuário existe
+
+            EspacoComum espaco = new EspacoComum();
+            espaco.setId(idEspaco);
+
+            Usuario usuario = usuarioDAO.buscarPorId(idUsuario);
+
+            if (usuario == null) {
+                System.out.println("Usuário não encontrado.");
+                return;
+            }
+
+            Reserva reserva = new Reserva();
+            reserva.setEspaco(espaco);
+            reserva.setUsuarioSolicitante(usuario);
+            reserva.setInicio(inicio);
+            reserva.setFim(fim);
+            reserva.setQuantidadePessoas(quantidade);
+            reserva.setObservacoes(observacoes.isBlank() ? null : observacoes);
+
+            reservaDAO.solicitar(reserva);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um número válido.");
+        } catch (java.time.format.DateTimeParseException e) {
+            System.out.println("Formato de data inválido. Utilize dd/MM/yyyy HH:mm.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao solicitar reserva: " + e.getMessage());
+        }
+    }
+
+
+    private static void listarReservas(ReservaDAO reservaDAO) {
+
+        System.out.println("\n--- RESERVAS CADASTRADAS ---");
+
+        try {
+            List<Reserva> reservas = reservaDAO.listarTodos();
+
+            if (reservas.isEmpty()) {
+                System.out.println("Nenhuma reserva cadastrada.");
+                return;
+            }
+
+            DateTimeFormatter formato =
+                    DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
+            for (Reserva reserva : reservas) {
+                System.out.println("\n------------------------------");
+                System.out.println("ID: " + reserva.getId());
+                System.out.println("Espaço: " + reserva.getEspaco().getNome());
+                System.out.println("Solicitante: "
+                        + reserva.getUsuarioSolicitante().getId());
+                System.out.println("Início: " + reserva.getInicio().format(formato));
+                System.out.println("Fim: " + reserva.getFim().format(formato));
+                System.out.println("Pessoas: " + reserva.getQuantidadePessoas());
+                System.out.println("Status: " + reserva.getStatus());
+
+                if (reserva.getUsuarioAprovador() != null) {
+                    System.out.println("Responsável: "
+                            + reserva.getUsuarioAprovador().getId());
+                }
+
+                System.out.println("Observações: " + reserva.getObservacoes());
+            }
+
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao listar reservas: " + e.getMessage());
+        }
+    }
+
+
+    private static void gerenciarReserva(
+            Scanner leitura,
+            ReservaDAO reservaDAO) {
+
+        System.out.println("\n--- APROVAR OU CANCELAR RESERVA ---");
+
+        try {
+            listarReservas(reservaDAO);
+
+            System.out.print("\nID da reserva: ");
+            int idReserva = Integer.parseInt(leitura.nextLine());
+
+            System.out.println("\n1 - Aprovar reserva");
+            System.out.println("2 - Cancelar reserva");
+            System.out.print("Escolha uma opção: ");
+
+            int opcao = lerOpcao(leitura);
+
+            StatusReserva novoStatus;
+
+            if (opcao == 1) {
+                novoStatus = StatusReserva.APROVADA;
+            } else if (opcao == 2) {
+                novoStatus = StatusReserva.CANCELADA;
+            } else {
+                System.out.println("Opção inválida!");
+                return;
+            }
+
+            System.out.print("ID do usuário responsável: ");
+            int idResponsavel = Integer.parseInt(leitura.nextLine());
+
+            reservaDAO.alterarStatus(
+                    idReserva,
+                    novoStatus,
+                    idResponsavel
+            );
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um número válido.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao gerenciar reserva: " + e.getMessage());
+        }
+    }
+
+    private static void excluirReserva(Scanner leitura, ReservaDAO reservaDAO) {
+        System.out.println("\n--- EXCLUIR RESERVA ---");
+
+        listarReservas(reservaDAO);
+
+        System.out.print("\nID da reserva que deseja excluir: ");
+        int idReserva = Integer.parseInt(leitura.nextLine());
+
+        System.out.print("Tem certeza que deseja excluir esta reserva? (S/N): ");
+        String confirmacao = leitura.nextLine();
+
+        if (confirmacao.equalsIgnoreCase("S")) {
+            try {
+                reservaDAO.excluir(idReserva);
+            } catch (Exception e) {
+                System.out.println("Erro ao excluir reserva: " + e.getMessage());
+            }
+        } else {
+            System.out.println("Exclusão cancelada.");
+        }
+    }
+
+
+    private static void menuEncomendas(
+            Scanner leitura,
+            EncomendaDAO encomendaDAO,
+            UnidadeDAO unidadeDAO,
+            FuncionarioDAO funcionarioDAO) {
+
+        boolean voltar = false;
+
+        while (!voltar) {
+            System.out.println("\n========== GESTÃO DE ENCOMENDAS ==========");
+            System.out.println("1 - Registrar encomenda");
+            System.out.println("2 - Listar encomendas");
+            System.out.println("3 - Registrar retirada");
+            System.out.println("0 - Voltar ao menu principal");
+
+            System.out.print("\nEscolha uma opção: ");
+
+            switch (lerOpcao(leitura)) {
+                case 1:
+                    cadastrarEncomenda(leitura, encomendaDAO, unidadeDAO, funcionarioDAO);
+                    break;
+
+                case 2:
+                    listarEncomendas(encomendaDAO);
+                    break;
+                case 3:
+                    registrarRetirada(leitura, encomendaDAO);
+                    break;
+                case 0:
+                    voltar = true;
+                    break;
+
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+    }
+
+    private static void cadastrarEncomenda(
+            Scanner leitura,
+            EncomendaDAO encomendaDAO,
+            UnidadeDAO unidadeDAO,
+            FuncionarioDAO funcionarioDAO) {
+
+        System.out.println("\n--- REGISTRAR ENCOMENDA ---");
+
+        try {
+            System.out.println("\n--- UNIDADES CADASTRADAS ---");
+            listarUnidades(unidadeDAO);
+
+            System.out.print("\nID da unidade destinatária: ");
+            Integer idUnidade = Integer.parseInt(leitura.nextLine());
+
+            UnidadeEntity unidade = unidadeDAO.buscarPorId(idUnidade);
+
+            if (unidade == null) {
+                System.out.println("Unidade não encontrada!");
+                return;
+            }
+
+            System.out.print("ID do funcionário que recebeu (Enter para ignorar): ");
+            String idFuncionarioTexto = leitura.nextLine();
+
+            Funcionario funcionario = null;
+
+            if (!idFuncionarioTexto.isBlank()) {
+                Integer idFuncionario = Integer.parseInt(idFuncionarioTexto);
+                funcionario = funcionarioDAO.buscarPorId(idFuncionario);
+
+                if (funcionario == null) {
+                    System.out.println("Funcionário não encontrado!");
+                    return;
+                }
+            }
+
+            Encomenda encomenda = new Encomenda();
+
+            encomenda.setUnidade(unidade);
+            encomenda.setFuncionarioRecebimento(funcionario);
+
+            System.out.print("Descrição da encomenda: ");
+            encomenda.setDescricao(leitura.nextLine());
+
+            System.out.print("Transportadora: ");
+            encomenda.setTransportadora(leitura.nextLine());
+
+            System.out.print("Código de rastreio: ");
+            encomenda.setCodigoRastreio(leitura.nextLine());
+
+            System.out.print("Observações: ");
+            encomenda.setObservacoes(leitura.nextLine());
+
+            encomendaDAO.salvar(encomenda);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Erro: informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao registrar encomenda: " + e.getMessage());
+        }
+    }
+
+    private static void listarEncomendas(EncomendaDAO encomendaDAO) {
+
+        System.out.println("\n--- ENCOMENDAS CADASTRADAS ---");
+
+        try {
+            List<Encomenda> encomendas = encomendaDAO.listarTodos();
+
+            if (encomendas.isEmpty()) {
+                System.out.println("Nenhuma encomenda cadastrada.");
+                return;
+            }
+
+            for (Encomenda encomenda : encomendas) {
+                System.out.println("\n------------------------------");
+                System.out.println("ID: " + encomenda.getId());
+                System.out.println("Unidade: "
+                        + encomenda.getUnidade().getBloco()
+                        + " - " + encomenda.getUnidade().getNumero());
+                System.out.println("Descrição: " + encomenda.getDescricao());
+                System.out.println("Transportadora: " + encomenda.getTransportadora());
+                System.out.println("Código de rastreio: " + encomenda.getCodigoRastreio());
+                System.out.println("Recebida em: " + encomenda.getRecebidaEm());
+                System.out.println("Status: " + encomenda.getStatus());
+
+                if (encomenda.getFuncionarioRecebimento() != null) {
+                    System.out.println("Funcionário responsável: "
+                            + encomenda.getFuncionarioRecebimento().getId());
+                }
+
+                System.out.println("Observações: " + encomenda.getObservacoes());
+            }
+
+            System.out.println("\nTotal de encomendas: " + encomendas.size());
+
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao listar encomendas: " + e.getMessage());
+        }
+    }
+
+
+    private static void registrarRetirada(
+            Scanner leitura,
+            EncomendaDAO encomendaDAO
+    ) {
+        System.out.println("\n=== REGISTRAR RETIRADA ===");
+
+        // Exibe as encomendas cadastradas
+        listarEncomendas(encomendaDAO);
+
+        try {
+            System.out.print("\nInforme o ID da encomenda: ");
+            Integer idEncomenda = Integer.parseInt(leitura.nextLine());
+
+            System.out.print("Nome de quem retirou: ");
+            String retiradoPor = leitura.nextLine();
+
+            encomendaDAO.registrarRetirada(idEncomenda, retiradoPor);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID numérico válido.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao registrar retirada: " + e.getMessage());
+        }
+    }
+
+
+
+    // ==========================================
+// MENU DE VAGAS E VEÍCULOS
+// ==========================================
+
+    private static void menuVagasVeiculos(
+            Scanner leitura,
+            VagaDAO vagaDAO,
+            VeiculoDAO veiculoDAO,
+            UnidadeDAO unidadeDAO) {
+
+        boolean voltar = false;
+
+        while (!voltar) {
+
+            System.out.println("\n========== GESTÃO DE VAGAS E VEÍCULOS ==========");
+            System.out.println("1 - Cadastrar vaga");
+            System.out.println("2 - Listar vagas");
+            System.out.println("3 - Cadastrar veículo");
+            System.out.println("4 - Listar veículos");
+            System.out.println("0 - Voltar ao menu principal");
+
+            System.out.print("\nEscolha uma opção: ");
+
+            switch (lerOpcao(leitura)) {
+
+                case 1:
+                    cadastrarVaga(leitura, vagaDAO, unidadeDAO);
+                    break;
+
+                case 2:
+                    listarVagas(vagaDAO);
+                    break;
+
+                case 3:
+                    cadastrarVeiculo(leitura, veiculoDAO, unidadeDAO, vagaDAO);
+                    break;
+
+                case 4:
+                    listarVeiculos(veiculoDAO);
+                    break;
+
+                case 0:
+                    voltar = true;
+                    break;
+
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+    }
+
+
+    // ==========================================
+// CADASTRAR VAGA
+// ==========================================
+
+    private static void cadastrarVaga(
+            Scanner leitura,
+            VagaDAO vagaDAO,
+            UnidadeDAO unidadeDAO) {
+
+        System.out.println("\n--- CADASTRAR VAGA ---");
+
+        try {
+
+            Vaga vaga = new Vaga();
+
+            System.out.print("Identificação da vaga: ");
+            vaga.setIdentificacao(leitura.nextLine());
+
+            System.out.println("\n--- TIPOS DE VAGA ---");
+            System.out.println("1 - CARRO");
+            System.out.println("2 - MOTO");
+            System.out.println("3 - BICICLETA");
+            System.out.println("4 - OUTRO");
+
+            System.out.print("Escolha o tipo: ");
+
+            int tipo = lerOpcao(leitura);
+
+            switch (tipo) {
+                case 1:
+                    vaga.setTipo(TipoVaga.CARRO);
+                    break;
+                case 2:
+                    vaga.setTipo(TipoVaga.MOTO);
+                    break;
+                case 3:
+                    vaga.setTipo(TipoVaga.BICICLETA);
+                    break;
+                case 4:
+                    vaga.setTipo(TipoVaga.OUTRO);
+                    break;
+                default:
+                    System.out.println("Tipo inválido!");
+                    return;
+            }
+
+            System.out.print("A vaga é coberta? (S/N): ");
+            String coberta = leitura.nextLine();
+
+            vaga.setCoberta(coberta.equalsIgnoreCase("S"));
+            vaga.setStatus(StatusVaga.DISPONIVEL);
+
+            System.out.println("\n--- VINCULAR UNIDADE ---");
+            System.out.println("0 - Não vincular a uma unidade");
+
+            listarUnidades(unidadeDAO);
+
+            System.out.print("\nID da unidade (0 para ignorar): ");
+            Integer idUnidade = Integer.parseInt(leitura.nextLine());
+
+            if (idUnidade != 0) {
+
+                UnidadeEntity unidade = unidadeDAO.buscarPorId(idUnidade);
+
+                if (unidade == null) {
+                    System.out.println("Unidade não encontrada!");
+                    return;
+                }
+
+                vaga.setUnidade(unidade);
+            }
+
+            vagaDAO.salvar(vaga);
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Erro: informe um número válido.");
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao cadastrar vaga: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+// LISTAR VAGAS
+// ==========================================
+
+    private static void listarVagas(VagaDAO vagaDAO) {
+
+        System.out.println("\n--- VAGAS CADASTRADAS ---");
+
+        try {
+
+            List<Vaga> vagas = vagaDAO.listarTodos();
+
+            if (vagas.isEmpty()) {
+                System.out.println("Nenhuma vaga cadastrada.");
+                return;
+            }
+
+            for (Vaga vaga : vagas) {
+
+                System.out.println("\n------------------------------");
+                System.out.println("ID: " + vaga.getId());
+                System.out.println("Identificação: " + vaga.getIdentificacao());
+                System.out.println("Tipo: " + vaga.getTipo());
+                System.out.println("Coberta: " + (vaga.isCoberta() ? "Sim" : "Não"));
+                System.out.println("Status: " + vaga.getStatus());
+
+                if (vaga.getUnidade() != null) {
+
+                    System.out.println("Unidade: "
+                            + vaga.getUnidade().getBloco()
+                            + " - "
+                            + vaga.getUnidade().getNumero());
+
+                } else {
+
+                    System.out.println("Unidade: Não vinculada");
+                }
+            }
+
+            System.out.println("\nTotal de vagas: " + vagas.size());
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao listar vagas: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+// CADASTRAR VEÍCULO
+// ==========================================
+
+    private static void cadastrarVeiculo(
+            Scanner leitura,
+            VeiculoDAO veiculoDAO,
+            UnidadeDAO unidadeDAO,
+            VagaDAO vagaDAO) {
+
+        System.out.println("\n--- CADASTRAR VEÍCULO ---");
+
+        try {
+
+            Veiculo veiculo = new Veiculo();
+
+            // Unidade obrigatória
+            System.out.println("\n--- UNIDADES CADASTRADAS ---");
+            listarUnidades(unidadeDAO);
+
+            System.out.print("\nID da unidade responsável: ");
+            Integer idUnidade = Integer.parseInt(leitura.nextLine());
+
+            UnidadeEntity unidade = unidadeDAO.buscarPorId(idUnidade);
+
+            if (unidade == null) {
+                System.out.println("Unidade não encontrada!");
+                return;
+            }
+
+            veiculo.setUnidade(unidade);
+
+            // Dados do veículo
+            System.out.print("Placa: ");
+            veiculo.setPlaca(leitura.nextLine());
+
+            System.out.print("Modelo: ");
+            veiculo.setModelo(leitura.nextLine());
+
+            System.out.print("Marca: ");
+            veiculo.setMarca(leitura.nextLine());
+
+            System.out.print("Cor: ");
+            veiculo.setCor(leitura.nextLine());
+
+            // Tipo do veículo
+            System.out.println("\n--- TIPOS DE VEÍCULO ---");
+            System.out.println("1 - CARRO");
+            System.out.println("2 - MOTO");
+            System.out.println("3 - BICICLETA");
+            System.out.println("4 - OUTRO");
+
+            System.out.print("Escolha o tipo: ");
+
+            int tipo = lerOpcao(leitura);
+
+            switch (tipo) {
+                case 1:
+                    veiculo.setTipo(TipoVeiculo.CARRO);
+                    break;
+                case 2:
+                    veiculo.setTipo(TipoVeiculo.MOTO);
+                    break;
+                case 3:
+                    veiculo.setTipo(TipoVeiculo.BICICLETA);
+                    break;
+                case 4:
+                    veiculo.setTipo(TipoVeiculo.OUTRO);
+                    break;
+                default:
+                    System.out.println("Tipo inválido!");
+                    return;
+            }
+
+            // Vaga opcional
+            System.out.println("\n--- VINCULAR VAGA ---");
+            listarVagas(vagaDAO);
+
+            System.out.print("\nID da vaga (0 para não vincular): ");
+            Integer idVaga = Integer.parseInt(leitura.nextLine());
+
+            if (idVaga != 0) {
+
+                List<Vaga> vagas = vagaDAO.listarTodos();
+
+                Vaga vagaSelecionada = null;
+
+                for (Vaga vaga : vagas) {
+
+                    if (vaga.getId().equals(idVaga)) {
+                        vagaSelecionada = vaga;
+                        break;
+                    }
+                }
+
+                if (vagaSelecionada == null) {
+                    System.out.println("Vaga não encontrada!");
+                    return;
+                }
+
+                veiculo.setVaga(vagaSelecionada);
+            }
+
+            veiculoDAO.salvar(veiculo);
+
+        } catch (NumberFormatException e) {
+
+            System.out.println("Erro: informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao cadastrar veículo: " + e.getMessage());
+        }
+    }
+
+    // ==========================================
+// LISTAR VEÍCULOS
+// ==========================================
+
+    private static void listarVeiculos(VeiculoDAO veiculoDAO) {
+
+        System.out.println("\n--- VEÍCULOS CADASTRADOS ---");
+
+        try {
+
+            List<Veiculo> veiculos = veiculoDAO.listarTodos();
+
+            if (veiculos.isEmpty()) {
+                System.out.println("Nenhum veículo cadastrado.");
+                return;
+            }
+
+            for (Veiculo veiculo : veiculos) {
+
+                System.out.println("\n------------------------------");
+                System.out.println("ID: " + veiculo.getId());
+                System.out.println("Placa: " + veiculo.getPlaca());
+                System.out.println("Modelo: " + veiculo.getModelo());
+                System.out.println("Marca: " + veiculo.getMarca());
+                System.out.println("Cor: " + veiculo.getCor());
+                System.out.println("Tipo: " + veiculo.getTipo());
+
+                System.out.println("Unidade: "
+                        + veiculo.getUnidade().getBloco()
+                        + " - "
+                        + veiculo.getUnidade().getNumero());
+
+                if (veiculo.getVaga() != null) {
+
+                    System.out.println("Vaga: "
+                            + veiculo.getVaga().getIdentificacao());
+
+                } else {
+
+                    System.out.println("Vaga: Não vinculada");
+                }
+            }
+
+            System.out.println("\nTotal de veículos: " + veiculos.size());
+
+        } catch (RuntimeException e) {
+
+            System.out.println("Erro ao listar veículos: " + e.getMessage());
+        }
+    }
+
+
+
+    // ==========================================
+    // MENU DE SOLICITAÇÕES DE MANUTENÇÃO
+    // ==========================================
+
+    private static void menuSolicitacoesManutencao(
+            Scanner leitura,
+            SolicitacaoManutencaoDAO solicitacaoDAO,
+            UsuarioDAO usuarioDAO,
+            UnidadeDAO unidadeDAO,
+            FuncionarioDAO funcionarioDAO) {
+
+        boolean voltar = false;
+
+        while (!voltar) {
+
+            System.out.println("\n========== GESTÃO DE MANUTENÇÃO ==========");
+            System.out.println("1 - Cadastrar solicitação");
+            System.out.println("2 - Listar solicitações");
+            System.out.println("3 - Consultar solicitação por ID");
+            System.out.println("4 - Atualizar status");
+            System.out.println("5 - Atribuir funcionário responsável");
+            System.out.println("6 - Excluir solicitação");
+            System.out.println("0 - Voltar ao menu principal");
+
+            System.out.print("\nEscolha uma opção: ");
+
+            switch (lerOpcao(leitura)) {
+
+                case 1:
+                    cadastrarSolicitacaoManutencao(
+                            leitura, solicitacaoDAO, usuarioDAO, unidadeDAO);
+                    break;
+
+                case 2:
+                    listarSolicitacoesManutencao(solicitacaoDAO);
+                    break;
+
+                case 3:
+                    consultarSolicitacaoManutencao(leitura, solicitacaoDAO);
+                    break;
+
+                case 4:
+                    atualizarStatusSolicitacao(leitura, solicitacaoDAO);
+                    break;
+
+                case 5:
+                    atribuirFuncionarioSolicitacao(
+                            leitura, solicitacaoDAO, funcionarioDAO);
+                    break;
+
+                case 6:
+                    excluirSolicitacaoManutencao(leitura, solicitacaoDAO);
+                    break;
+
+                case 0:
+                    voltar = true;
+                    break;
+
+                default:
+                    System.out.println("Opção inválida!");
+            }
+        }
+    }
+
+
+    // ==========================================
+    // CADASTRAR SOLICITAÇÃO
+    // ==========================================
+
+    private static void cadastrarSolicitacaoManutencao(
+            Scanner leitura,
+            SolicitacaoManutencaoDAO solicitacaoDAO,
+            UsuarioDAO usuarioDAO,
+            UnidadeDAO unidadeDAO) {
+
+        System.out.println("\n--- CADASTRAR SOLICITAÇÃO DE MANUTENÇÃO ---");
+
+        try {
+
+            System.out.println("\n--- USUÁRIOS CADASTRADOS ---");
+
+            for (Usuario usuario : usuarioDAO.listarTodos()) {
+                System.out.println(
+                        usuario.getId() + " - " + usuario.getNome());
+            }
+
+            System.out.print("\nID do usuário solicitante: ");
+            Integer idUsuario = Integer.parseInt(leitura.nextLine());
+
+            System.out.println("\n--- UNIDADES CADASTRADAS ---");
+            listarUnidades(unidadeDAO);
+
+            System.out.print(
+                    "\nID da unidade (Enter para não informar): ");
+
+            String unidadeTexto = leitura.nextLine();
+
+            Integer idUnidade = unidadeTexto.isBlank()
+                    ? null
+                    : Integer.parseInt(unidadeTexto);
+
+            System.out.print("Local do problema: ");
+            String localProblema = leitura.nextLine();
+
+            System.out.print("Título da solicitação: ");
+            String titulo = leitura.nextLine();
+
+            System.out.print("Descrição: ");
+            String descricao = leitura.nextLine();
+
+            System.out.println("\n--- PRIORIDADES ---");
+            System.out.println("1 - BAIXA");
+            System.out.println("2 - MEDIA");
+            System.out.println("3 - ALTA");
+            System.out.println("4 - URGENTE");
+
+            System.out.print("Escolha a prioridade: ");
+
+            PrioridadeManutencao prioridade;
+
+            switch (lerOpcao(leitura)) {
+                case 1:
+                    prioridade = PrioridadeManutencao.BAIXA;
+                    break;
+                case 2:
+                    prioridade = PrioridadeManutencao.MEDIA;
+                    break;
+                case 3:
+                    prioridade = PrioridadeManutencao.ALTA;
+                    break;
+                case 4:
+                    prioridade = PrioridadeManutencao.URGENTE;
+                    break;
+                default:
+                    System.out.println("Prioridade inválida!");
+                    return;
+            }
+
+            Integer id = solicitacaoDAO.salvar(
+                    idUsuario,
+                    idUnidade,
+                    localProblema,
+                    titulo,
+                    descricao,
+                    prioridade
+            );
+
+            System.out.println(
+                    "\nSolicitação cadastrada com sucesso! ID: " + id);
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um número válido.");
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao cadastrar solicitação: " + e.getMessage());
+        }
+    }
+
+
+    // ==========================================
+    // LISTAR SOLICITAÇÕES
+    // ==========================================
+
+    private static void listarSolicitacoesManutencao(
+            SolicitacaoManutencaoDAO solicitacaoDAO) {
+
+        System.out.println("\n--- SOLICITAÇÕES DE MANUTENÇÃO ---");
+
+        try {
+
+            List<SolicitacaoManutencao> solicitacoes =
+                    solicitacaoDAO.listarTodos();
+
+            if (solicitacoes.isEmpty()) {
+                System.out.println("Nenhuma solicitação cadastrada.");
+                return;
+            }
+
+            for (SolicitacaoManutencao s : solicitacoes) {
+
+                System.out.println("\n----------------------------------");
+                System.out.println("ID: " + s.getId());
+                System.out.println("Título: " + s.getTitulo());
+                System.out.println("Local: " + s.getLocalProblema());
+                System.out.println("Descrição: " + s.getDescricao());
+                System.out.println("Prioridade: " + s.getPrioridade());
+                System.out.println("Status: " + s.getStatus());
+
+                System.out.println(
+                        "Solicitante: " +
+                                s.getUsuarioSolicitante().getNome());
+
+                if (s.getUnidade() != null) {
+                    System.out.println(
+                            "Unidade: " +
+                                    s.getUnidade().getBloco() + " - " +
+                                    s.getUnidade().getNumero());
+                } else {
+                    System.out.println("Unidade: Não informada");
+                }
+
+                if (s.getFuncionarioResponsavel() != null) {
+                    System.out.println(
+                            "Responsável: " +
+                                    s.getFuncionarioResponsavel()
+                                            .getUsuario().getNome());
+                } else {
+                    System.out.println("Responsável: Não atribuído");
+                }
+
+                System.out.println("Aberta em: " + s.getAbertaEm());
+                System.out.println("Concluída em: " + s.getConcluidaEm());
+            }
+
+            System.out.println(
+                    "\nTotal de solicitações: " + solicitacoes.size());
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao listar solicitações: " + e.getMessage());
+        }
+    }
+
+
+    // ==========================================
+    // CONSULTAR SOLICITAÇÃO POR ID
+    // ==========================================
+
+    private static void consultarSolicitacaoManutencao(
+            Scanner leitura,
+            SolicitacaoManutencaoDAO solicitacaoDAO) {
+
+        System.out.println("\n--- CONSULTAR SOLICITAÇÃO ---");
+
+        try {
+
+            System.out.print("Informe o ID da solicitação: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            SolicitacaoManutencao s = solicitacaoDAO.buscarPorId(id);
+
+            if (s == null) {
+                System.out.println("Solicitação não encontrada.");
+                return;
+            }
+
+            System.out.println("\nID: " + s.getId());
+            System.out.println("Título: " + s.getTitulo());
+            System.out.println("Local: " + s.getLocalProblema());
+            System.out.println("Descrição: " + s.getDescricao());
+            System.out.println("Prioridade: " + s.getPrioridade());
+            System.out.println("Status: " + s.getStatus());
+            System.out.println(
+                    "Solicitante: " + s.getUsuarioSolicitante().getNome());
+
+            if (s.getUnidade() != null) {
+                System.out.println(
+                        "Unidade: " + s.getUnidade().getBloco()
+                                + " - " + s.getUnidade().getNumero());
+            }
+
+            if (s.getFuncionarioResponsavel() != null) {
+                System.out.println(
+                        "Responsável: " +
+                                s.getFuncionarioResponsavel()
+                                        .getUsuario().getNome());
+            } else {
+                System.out.println("Responsável: Não atribuído");
+            }
+
+            System.out.println("Aberta em: " + s.getAbertaEm());
+            System.out.println("Concluída em: " + s.getConcluidaEm());
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao consultar solicitação: " + e.getMessage());
+        }
+    }
+
+
+    // ==========================================
+    // ATUALIZAR STATUS
+    // ==========================================
+
+    private static void atualizarStatusSolicitacao(
+            Scanner leitura,
+            SolicitacaoManutencaoDAO solicitacaoDAO) {
+
+        System.out.println("\n--- ATUALIZAR STATUS DA SOLICITAÇÃO ---");
+
+        try {
+
+            listarSolicitacoesManutencao(solicitacaoDAO);
+
+            System.out.print("\nID da solicitação: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            System.out.println("\n--- NOVO STATUS ---");
+            System.out.println("1 - ABERTA");
+            System.out.println("2 - EM_ANDAMENTO");
+            System.out.println("3 - AGUARDANDO");
+            System.out.println("4 - CONCLUIDA");
+            System.out.println("5 - CANCELADA");
+
+            System.out.print("Escolha o novo status: ");
+
+            StatusSolicitacao novoStatus;
+
+            switch (lerOpcao(leitura)) {
+                case 1:
+                    novoStatus = StatusSolicitacao.ABERTA;
+                    break;
+                case 2:
+                    novoStatus = StatusSolicitacao.EM_ANDAMENTO;
+                    break;
+                case 3:
+                    novoStatus = StatusSolicitacao.AGUARDANDO;
+                    break;
+                case 4:
+                    novoStatus = StatusSolicitacao.CONCLUIDA;
+                    break;
+                case 5:
+                    novoStatus = StatusSolicitacao.CANCELADA;
+                    break;
+                default:
+                    System.out.println("Status inválido!");
+                    return;
+            }
+
+            boolean atualizado =
+                    solicitacaoDAO.atualizarStatus(id, novoStatus);
+
+            if (atualizado) {
+                System.out.println("Status atualizado com sucesso!");
+            } else {
+                System.out.println(
+                        "Não foi possível atualizar. Verifique o ID e o status atual.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao atualizar status: " + e.getMessage());
+        }
+    }
+
+
+    // ==========================================
+    // ATRIBUIR FUNCIONÁRIO RESPONSÁVEL
+    // ==========================================
+
+    private static void atribuirFuncionarioSolicitacao(
+            Scanner leitura,
+            SolicitacaoManutencaoDAO solicitacaoDAO,
+            FuncionarioDAO funcionarioDAO) {
+
+        System.out.println("\n--- ATRIBUIR RESPONSÁVEL ---");
+
+        try {
+
+            listarSolicitacoesManutencao(solicitacaoDAO);
+
+            System.out.print("\nID da solicitação: ");
+            Integer idSolicitacao =
+                    Integer.parseInt(leitura.nextLine());
+
+            System.out.println("\n--- FUNCIONÁRIOS CADASTRADOS ---");
+
+            List<Funcionario> funcionarios = funcionarioDAO.listarTodos();
+
+            if (funcionarios.isEmpty()) {
+                System.out.println("Nenhum funcionário cadastrado.");
+                return;
+            }
+
+            for (Funcionario funcionario : funcionarios) {
+                System.out.println(
+                        funcionario.getId() + " - " +
+                                funcionario.getUsuario().getNome());
+            }
+
+            System.out.print("\nID do funcionário responsável: ");
+            Integer idFuncionario =
+                    Integer.parseInt(leitura.nextLine());
+
+            boolean atribuido = solicitacaoDAO.atribuirResponsavel(
+                    idSolicitacao,
+                    idFuncionario
+            );
+
+            if (atribuido) {
+                System.out.println(
+                        "Funcionário atribuído com sucesso!");
+            } else {
+                System.out.println(
+                        "Não foi possível atribuir o funcionário. " +
+                                "Verifique os IDs e o status da solicitação.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao atribuir funcionário: " + e.getMessage());
+        }
+    }
+
+
+    // ==========================================
+    // EXCLUIR SOLICITAÇÃO
+    // ==========================================
+
+    private static void excluirSolicitacaoManutencao(
+            Scanner leitura,
+            SolicitacaoManutencaoDAO solicitacaoDAO) {
+
+        System.out.println("\n--- EXCLUIR SOLICITAÇÃO ---");
+
+        try {
+
+            listarSolicitacoesManutencao(solicitacaoDAO);
+
+            System.out.print("\nID da solicitação: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            SolicitacaoManutencao solicitacao =
+                    solicitacaoDAO.buscarPorId(id);
+
+            if (solicitacao == null) {
+                System.out.println("Solicitação não encontrada.");
+                return;
+            }
+
+            System.out.println(
+                    "\nSolicitação selecionada: " +
+                            solicitacao.getTitulo());
+
+            System.out.print("Confirma a exclusão? (S/N): ");
+            String confirmacao = leitura.nextLine();
+
+            if (confirmacao.equalsIgnoreCase("S")) {
+
+                boolean excluida = solicitacaoDAO.excluir(id);
+
+                if (excluida) {
+                    System.out.println(
+                            "Solicitação excluída com sucesso!");
+                } else {
+                    System.out.println(
+                            "Não foi possível excluir a solicitação.");
+                }
+
+            } else {
+                System.out.println("Exclusão cancelada.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID numérico válido.");
+
+        } catch (RuntimeException e) {
+            System.out.println(
+                    "Erro ao excluir solicitação: " + e.getMessage());
+            System.out.println(
+                    "Verifique se existem serviços vinculados a ela.");
+        }
+    }
+    // ==========================================
+// MENU FINANCEIRO
+// ==========================================
+
+    private static void menuFinanceiro(
+            Scanner leitura,
+            TaxaCondominialDAO taxaCondominialDAO,
+            PagamentoDAO pagamentoDAO,
+            UnidadeDAO unidadeDAO) {
+
+        boolean executando = true;
+
+        while (executando) {
+
+            System.out.println("\n========== GESTÃO FINANCEIRA ==========");
+            System.out.println("1 - Listar taxas condominiais");
+            System.out.println("2 - Cadastrar taxa condominial");
+            System.out.println("3 - Buscar taxa por ID");
+            System.out.println("4 - Atualizar taxa condominial");
+            System.out.println("5 - Excluir taxa condominial");
+            System.out.println("6 - Listar pagamentos");
+            System.out.println("7 - Registrar pagamento");
+            System.out.println("8 - Excluir pagamento");
+            System.out.println("0 - Voltar ao menu principal");
+
+            System.out.print("\nEscolha uma opção: ");
+
+            try {
+                int opcao = Integer.parseInt(leitura.nextLine());
+
+                switch (opcao) {
+
+                    case 1:
+                        listarTaxasCondominiais(taxaCondominialDAO);
+                        break;
+
+                    case 2:
+                        cadastrarTaxaCondominial(
+                                leitura,
+                                taxaCondominialDAO,
+                                unidadeDAO
+                        );
+                        break;
+
+                    case 3:
+                        buscarTaxaCondominial(
+                                leitura,
+                                taxaCondominialDAO
+                        );
+                        break;
+
+                    case 4:
+                        atualizarTaxaCondominial(
+                                leitura,
+                                taxaCondominialDAO
+                        );
+                        break;
+
+                    case 5:
+                        excluirTaxaCondominial(
+                                leitura,
+                                taxaCondominialDAO
+                        );
+                        break;
+
+                    case 6:
+                        listarPagamentos(pagamentoDAO);
+                        break;
+
+                    case 7:
+                        registrarPagamento(
+                                leitura,
+                                pagamentoDAO,
+                                taxaCondominialDAO
+                        );
+                        break;
+
+                    case 8:
+                        excluirPagamento(
+                                leitura,
+                                pagamentoDAO
+                        );
+                        break;
+
+                    case 0:
+                        executando = false;
+                        break;
+
+                    default:
+                        System.out.println("Opção inválida.");
+                }
+
+            } catch (NumberFormatException e) {
+                System.out.println("Informe uma opção numérica válida.");
+            }
+        }
+    }
+
+    private static void listarTaxasCondominiais(
+            TaxaCondominialDAO taxaDAO) {
+
+        System.out.println("\n--- TAXAS CONDOMINIAIS ---");
+
+        try {
+            List<TaxaCondominial> taxas = taxaDAO.listarTodos();
+
+            if (taxas.isEmpty()) {
+                System.out.println("Nenhuma taxa cadastrada.");
+                return;
+            }
+
+            for (TaxaCondominial taxa : taxas) {
+                System.out.println("----------------------------------");
+                System.out.println("ID: " + taxa.getId());
+                System.out.println("Unidade: "
+                        + taxa.getUnidade().getBloco() + " - "
+                        + taxa.getUnidade().getNumero());
+                System.out.println("Descrição: " + taxa.getDescricao());
+                System.out.println("Competência: " + taxa.getCompetencia());
+                System.out.println("Valor: R$ " + taxa.getValor());
+                System.out.println("Vencimento: " + taxa.getVencimento());
+                System.out.println("Status: " + taxa.getStatus());
+            }
+
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao listar taxas: " + e.getMessage());
+        }
+    }
+
+    private static void cadastrarTaxaCondominial(
+            Scanner leitura,
+            TaxaCondominialDAO taxaDAO,
+            UnidadeDAO unidadeDAO) {
+
+        System.out.println("\n--- CADASTRAR TAXA CONDOMINIAL ---");
+
+        try {
+            listarUnidades(unidadeDAO);
+
+            System.out.print("\nID da unidade: ");
+            Integer idUnidade = Integer.parseInt(leitura.nextLine());
+
+            UnidadeEntity unidade = unidadeDAO.buscarPorId(idUnidade);
+
+            if (unidade == null) {
+                System.out.println("Unidade não encontrada.");
+                return;
+            }
+
+            System.out.print("Descrição da taxa: ");
+            String descricao = leitura.nextLine();
+
+            System.out.print("Competência (AAAA-MM): ");
+            String competencia = leitura.nextLine();
+
+            System.out.print("Valor: ");
+            BigDecimal valor = new BigDecimal(
+                    leitura.nextLine().replace(",", "."));
+
+            System.out.print("Vencimento (AAAA-MM-DD): ");
+            LocalDate vencimento = LocalDate.parse(leitura.nextLine());
+
+            TaxaCondominial taxa = new TaxaCondominial();
+
+            taxa.setUnidade(unidade);
+            taxa.setDescricao(descricao);
+            taxa.setCompetencia(competencia);
+            taxa.setValor(valor);
+            taxa.setVencimento(vencimento);
+            taxa.setStatus(StatusTaxaCondominial.ABERTA);
+
+            taxaDAO.salvar(taxa);
+
+            System.out.println("Taxa cadastrada com sucesso!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID ou valor numérico válido.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao cadastrar taxa: " + e.getMessage());
+        }
+    }
+
+    private static void buscarTaxaCondominial(
+            Scanner leitura,
+            TaxaCondominialDAO taxaDAO) {
+
+        System.out.println("\n--- BUSCAR TAXA ---");
+
+        try {
+            System.out.print("ID da taxa: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            TaxaCondominial taxa = taxaDAO.buscarPorId(id);
+
+            if (taxa == null) {
+                System.out.println("Taxa não encontrada.");
+                return;
+            }
+
+            System.out.println("\nID: " + taxa.getId());
+            System.out.println("Unidade: "
+                    + taxa.getUnidade().getBloco() + " - "
+                    + taxa.getUnidade().getNumero());
+            System.out.println("Descrição: " + taxa.getDescricao());
+            System.out.println("Competência: " + taxa.getCompetencia());
+            System.out.println("Valor: R$ " + taxa.getValor());
+            System.out.println("Vencimento: " + taxa.getVencimento());
+            System.out.println("Status: " + taxa.getStatus());
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID válido.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao buscar taxa: " + e.getMessage());
+        }
+    }
+
+    private static void atualizarTaxaCondominial(
+            Scanner leitura,
+            TaxaCondominialDAO taxaDAO) {
+
+        System.out.println("\n--- ATUALIZAR TAXA ---");
+
+        try {
+            System.out.print("ID da taxa: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            TaxaCondominial taxa = taxaDAO.buscarPorId(id);
+
+            if (taxa == null) {
+                System.out.println("Taxa não encontrada.");
+                return;
+            }
+
+            System.out.println("Descrição atual: " + taxa.getDescricao());
+            System.out.print("Nova descrição: ");
+            taxa.setDescricao(leitura.nextLine());
+
+            System.out.println("Competência atual: " + taxa.getCompetencia());
+            System.out.print("Nova competência (AAAA-MM): ");
+            taxa.setCompetencia(leitura.nextLine());
+
+            System.out.println("Valor atual: " + taxa.getValor());
+            System.out.print("Novo valor: ");
+            taxa.setValor(new BigDecimal(
+                    leitura.nextLine().replace(",", ".")));
+
+            System.out.println("Vencimento atual: " + taxa.getVencimento());
+            System.out.print("Novo vencimento (AAAA-MM-DD): ");
+            taxa.setVencimento(LocalDate.parse(leitura.nextLine()));
+
+            taxaDAO.atualizar(taxa);
+
+            System.out.println("Taxa atualizada com sucesso!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe valores numéricos válidos.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao atualizar taxa: " + e.getMessage());
+        }
+    }
+
+    private static void excluirTaxaCondominial(
+            Scanner leitura,
+            TaxaCondominialDAO taxaDAO) {
+
+        System.out.println("\n--- EXCLUIR TAXA ---");
+
+        try {
+            System.out.print("ID da taxa: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            TaxaCondominial taxa = taxaDAO.buscarPorId(id);
+
+            if (taxa == null) {
+                System.out.println("Taxa não encontrada.");
+                return;
+            }
+
+            System.out.println("Taxa: " + taxa.getDescricao());
+            System.out.println("Valor: R$ " + taxa.getValor());
+
+            System.out.print("Confirma a exclusão? (S/N): ");
+            String confirmacao = leitura.nextLine();
+
+            if (confirmacao.equalsIgnoreCase("S")) {
+                taxaDAO.excluir(id);
+                System.out.println("Taxa excluída com sucesso!");
+            } else {
+                System.out.println("Exclusão cancelada.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID válido.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao excluir taxa: " + e.getMessage());
+            System.out.println("Verifique se existem pagamentos vinculados.");
+        }
+    }
+
+    private static void listarPagamentos(PagamentoDAO pagamentoDAO) {
+
+        System.out.println("\n--- PAGAMENTOS REGISTRADOS ---");
+
+        try {
+            List<Pagamento> pagamentos = pagamentoDAO.listarTodos();
+
+            if (pagamentos.isEmpty()) {
+                System.out.println("Nenhum pagamento registrado.");
+                return;
+            }
+
+            for (Pagamento pagamento : pagamentos) {
+                System.out.println("----------------------------------");
+                System.out.println("ID: " + pagamento.getId());
+                System.out.println("Taxa: "
+                        + pagamento.getTaxa().getDescricao());
+                System.out.println("Unidade: "
+                        + pagamento.getTaxa().getUnidade().getBloco()
+                        + " - "
+                        + pagamento.getTaxa().getUnidade().getNumero());
+                System.out.println("Valor pago: R$ "
+                        + pagamento.getValorPago());
+                System.out.println("Data: " + pagamento.getPagoEm());
+                System.out.println("Forma: "
+                        + pagamento.getFormaPagamento());
+                System.out.println("Comprovante: "
+                        + pagamento.getComprovante());
+                System.out.println("Observações: "
+                        + pagamento.getObservacoes());
+            }
+
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao listar pagamentos: " + e.getMessage());
+        }
+    }
+
+    private static void registrarPagamento(
+            Scanner leitura,
+            PagamentoDAO pagamentoDAO,
+            TaxaCondominialDAO taxaDAO) {
+
+        System.out.println("\n--- REGISTRAR PAGAMENTO ---");
+
+        try {
+            listarTaxasCondominiais(taxaDAO);
+
+            System.out.print("\nID da taxa: ");
+            Integer idTaxa = Integer.parseInt(leitura.nextLine());
+
+            TaxaCondominial taxa = taxaDAO.buscarPorId(idTaxa);
+
+            if (taxa == null) {
+                System.out.println("Taxa não encontrada.");
+                return;
+            }
+
+            System.out.println("Taxa: " + taxa.getDescricao());
+            System.out.println("Valor total: R$ " + taxa.getValor());
+
+            System.out.print("Valor pago: ");
+            BigDecimal valorPago = new BigDecimal(
+                    leitura.nextLine().replace(",", "."));
+
+            System.out.println("\nFormas de pagamento:");
+            System.out.println("1 - PIX");
+            System.out.println("2 - BOLETO");
+            System.out.println("3 - DINHEIRO");
+            System.out.println("4 - CARTAO");
+            System.out.println("5 - TRANSFERENCIA");
+            System.out.println("6 - OUTRA");
+
+            System.out.print("Escolha: ");
+            int opcaoForma = Integer.parseInt(leitura.nextLine());
+
+            FormaPagamento formaPagamento;
+
+            switch (opcaoForma) {
+                case 1:
+                    formaPagamento = FormaPagamento.PIX;
+                    break;
+                case 2:
+                    formaPagamento = FormaPagamento.BOLETO;
+                    break;
+                case 3:
+                    formaPagamento = FormaPagamento.DINHEIRO;
+                    break;
+                case 4:
+                    formaPagamento = FormaPagamento.CARTAO;
+                    break;
+                case 5:
+                    formaPagamento = FormaPagamento.TRANSFERENCIA;
+                    break;
+                case 6:
+                    formaPagamento = FormaPagamento.OUTRA;
+                    break;
+                default:
+                    System.out.println("Forma de pagamento inválida.");
+                    return;
+            }
+
+            System.out.print("Comprovante (opcional): ");
+            String comprovante = leitura.nextLine();
+
+            System.out.print("Observações (opcional): ");
+            String observacoes = leitura.nextLine();
+
+            Pagamento pagamento = new Pagamento();
+
+            pagamento.setTaxa(taxa);
+            pagamento.setValorPago(valorPago);
+            pagamento.setPagoEm(LocalDateTime.now());
+            pagamento.setFormaPagamento(formaPagamento);
+            pagamento.setComprovante(comprovante);
+            pagamento.setObservacoes(observacoes);
+
+            pagamentoDAO.salvar(pagamento);
+
+            System.out.println("Pagamento registrado com sucesso!");
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe valores numéricos válidos.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao registrar pagamento: " + e.getMessage());
+        }
+    }
+
+    private static void excluirPagamento(
+            Scanner leitura,
+            PagamentoDAO pagamentoDAO) {
+
+        System.out.println("\n--- EXCLUIR PAGAMENTO ---");
+
+        try {
+            listarPagamentos(pagamentoDAO);
+
+            System.out.print("\nID do pagamento: ");
+            Integer id = Integer.parseInt(leitura.nextLine());
+
+            Pagamento pagamento = pagamentoDAO.buscarPorId(id);
+
+            if (pagamento == null) {
+                System.out.println("Pagamento não encontrado.");
+                return;
+            }
+
+            System.out.println("Valor: R$ " + pagamento.getValorPago());
+            System.out.println("Taxa: "
+                    + pagamento.getTaxa().getDescricao());
+
+            System.out.print("Confirma a exclusão? (S/N): ");
+            String confirmacao = leitura.nextLine();
+
+            if (confirmacao.equalsIgnoreCase("S")) {
+                pagamentoDAO.excluir(id);
+                System.out.println("Pagamento excluído com sucesso!");
+            } else {
+                System.out.println("Exclusão cancelada.");
+            }
+
+        } catch (NumberFormatException e) {
+            System.out.println("Informe um ID válido.");
+        } catch (RuntimeException e) {
+            System.out.println("Erro ao excluir pagamento: " + e.getMessage());
+        }
+    }
+
+
 }
