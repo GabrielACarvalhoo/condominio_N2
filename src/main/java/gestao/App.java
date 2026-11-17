@@ -4,6 +4,8 @@ import java.util.Scanner;
 import java.util.List;
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 import org.hibernate.Session;
@@ -69,6 +71,7 @@ import gestao.persistence.entity.FormaPagamento;
 public class App {
 
     public static void main(String[] args) {
+        Logger.getLogger("org.hibernate").setLevel(Level.SEVERE);
 
         Scanner leitura = new Scanner(System.in);
 
