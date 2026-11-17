@@ -43,11 +43,11 @@ A opção `0` encerra a aplicação. Nos submenus, a opção `0` retorna ao menu
 | Maven | Maven integrado ao IntelliJ ou Maven 3.9+ |
 | Hibernate ORM | 6.6.15.Final |
 | Jakarta Persistence API | 3.1.0 |
-| MySQL Connector/J | 9.2.0 |
+| MySQL Connector/J | 9.3.0 |
 | MySQL | 8.4 |
 | Docker Compose | Ambiente local do banco de dados |
 
-É necessário instalar um **JDK**, e não apenas um JRE, pois o JDK inclui as ferramentas de compilação Java.
+É necessário instalar um **JDK**, e não apenas um JRE, pois o JDK inclui as ferramentas de compilação Java. Embora o projeto recomende o JDK 21 para desenvolvimento e execução, o Maven compila o código com compatibilidade Java 17.
 
 ## Organização do repositório
 
@@ -55,6 +55,7 @@ A opção `0` encerra a aplicação. Nos submenus, a opção `0` retorna ao menu
 condominio_N2/
 ├── database/
 │   ├── schema.sql
+│   ├── dados_iniciais.sql
 │   └── diagrama (1).png
 ├── docs/
 │   ├── DescriçãoDoCondominio.md
@@ -81,7 +82,8 @@ condominio_N2/
 - **`dao/`:** classes responsáveis pelas operações de acesso e persistência de dados.
 - **`util/`:** utilitários de configuração e gerenciamento do Hibernate.
 - **`teste/`:** classes de teste e validação executadas individualmente.
-- **`database/schema.sql`:** script de criação do banco, tabelas e dados iniciais.
+- **`database/schema.sql`:** script de criação do banco, das tabelas e dos dados básicos necessários, como perfis e cargos.
+- **`database/dados_iniciais.sql`:** script separado com registros fictícios para demonstração do sistema.
 - **`database/diagrama (1).png`:** diagrama do banco de dados.
 - **`docs/`:** documentação do projeto e instruções de execução.
 - **`docker-compose.yml`:** configuração do serviço MySQL em container.
@@ -164,11 +166,23 @@ Esses parâmetros correspondem à configuração de desenvolvimento presente em 
 
 ### Criação do esquema
 
-Na primeira inicialização com um volume MySQL vazio, o Docker executa automaticamente o arquivo `database/schema.sql`, criando as tabelas e inserindo os dados iniciais definidos no script.
+Na primeira inicialização com um volume MySQL vazio, o Docker executa automaticamente o arquivo `database/schema.sql`, criando o banco e suas 22 tabelas, além dos dados básicos definidos nesse script.
 
 O Hibernate está configurado com `hbm2ddl.auto=validate`: ele valida se o esquema existente é compatível com as entidades mapeadas, mas não cria nem atualiza as tabelas.
 
 **Importante:** os scripts de inicialização do MySQL são executados somente quando o volume de dados é inicializado pela primeira vez. Se o volume já existir, alterações posteriores em `schema.sql` não serão aplicadas automaticamente.
+
+### Carga de dados fictícios para demonstração (opcional)
+
+O arquivo `database/dados_iniciais.sql` contém dados fictícios do cenário **Residencial Jardim das Palmeiras**, para facilitar a demonstração dos módulos. Esse arquivo **não é executado automaticamente** pelo Docker Compose.
+
+Para executá-lo em um banco já inicializado, abra o PowerShell na pasta raiz do projeto e rode:
+
+```powershell
+Get-Content .\database\dados_iniciais.sql | docker exec -i condominio-mysql mysql -uroot -proot123 gestao_condominio
+```
+
+> **Atenção:** esse script apaga os registros existentes das tabelas operacionais antes de inserir os dados de demonstração. Ele preserva a estrutura do banco e as tabelas de perfis e cargos, mas substitui os dados operacionais. Faça um backup antes de executá-lo se houver dados que deseja manter. Os dados pessoais do cenário são fictícios. O campo `senha_hash` utiliza um valor demonstrativo que **não é uma senha válida e não permite autenticação**.
 
 ### Consultar o banco
 
@@ -217,6 +231,7 @@ As classes localizadas em `src/main/java/gestao/persistence/teste` são programa
 - [Guia de configuração e execução no Windows](docs/GUIA_EXECUCAO.md)
 - [Descrição do condomínio](docs/DescriçãoDoCondominio.md)
 - [Script de criação do banco de dados](database/schema.sql)
+- [Script de dados fictícios para demonstração](database/dados_iniciais.sql)
 - [Diagrama do banco de dados](database/diagrama%20%281%29.png)
 
 ---
