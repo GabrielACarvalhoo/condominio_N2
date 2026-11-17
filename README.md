@@ -64,6 +64,14 @@ condominio_N2/
 │   └── main/
 │       ├── java/gestao/
 │       │   ├── App.java
+│       │   ├── exemplos/
+│       │   │   └── poo/
+│       │   │       ├── Pessoa.java
+│       │   │       ├── Morador.java
+│       │   │       ├── ConsultaPessoa.java
+│       │   │       ├── Notificavel.java
+│       │   │       ├── NotificacaoEmail.java
+│       │   │       └── DemonstracaoPOO.java
 │       │   └── persistence/
 │       │       ├── dao/
 │       │       ├── entity/
@@ -82,12 +90,28 @@ condominio_N2/
 - **`dao/`:** classes responsáveis pelas operações de acesso e persistência de dados.
 - **`util/`:** utilitários de configuração e gerenciamento do Hibernate.
 - **`teste/`:** classes de teste e validação executadas individualmente.
+- **`exemplos/poo/`:** exemplos didáticos e independentes que demonstram conceitos de Programação Orientada a Objetos em Java.
 - **`database/schema.sql`:** script de criação do banco, das tabelas e dos dados básicos necessários, como perfis e cargos.
 - **`database/dados_iniciais.sql`:** script separado com registros fictícios para demonstração do sistema.
 - **`database/diagrama (1).png`:** diagrama do banco de dados.
 - **`docs/`:** documentação do projeto e instruções de execução.
 - **`docker-compose.yml`:** configuração do serviço MySQL em container.
 - **`pom.xml`:** dependências e configuração de compilação Maven.
+
+### Exemplos didáticos de POO
+
+A pasta `src/main/java/gestao/exemplos/poo` contém classes criadas para demonstrar conceitos estudados na disciplina:
+
+| Classe | Conceito demonstrado |
+| --- | --- |
+| `Pessoa.java` e `Morador.java` | Classes, herança e sobrescrita de método (`@Override`) |
+| `ConsultaPessoa.java` | Sobrecarga de métodos |
+| `Notificavel.java` e `NotificacaoEmail.java` | Interface e implementação |
+| `DemonstracaoPOO.java` | Execução dos exemplos, incluindo polimorfismo |
+
+**Importante:** esses arquivos são exemplos educacionais independentes. Eles não fazem parte do fluxo operacional dos menus, nem substituem as entidades, DAOs ou funcionalidades reais do sistema de condomínio. Foram organizados separadamente para permitir a demonstração dos conceitos de POO sem alterar a lógica principal da aplicação.
+
+Para executar a demonstração, abra `DemonstracaoPOO.java` no IntelliJ IDEA e execute seu método `main`. A saída será apresentada no console da IDE. Não é necessário iniciar o banco de dados para executar essa demonstração.
 
 ## Configuração e execução
 
@@ -179,7 +203,7 @@ O arquivo `database/dados_iniciais.sql` contém dados fictícios do cenário **R
 Para executá-lo em um banco já inicializado, abra o PowerShell na pasta raiz do projeto e rode:
 
 ```powershell
-Get-Content .\database\dados_iniciais.sql | docker exec -i condominio-mysql mysql -uroot -proot123 gestao_condominio
+Get-Content .\\database\\dados_iniciais.sql | docker exec -i condominio-mysql mysql -uroot -proot123 gestao_condominio
 ```
 
 > **Atenção:** esse script apaga os registros existentes das tabelas operacionais antes de inserir os dados de demonstração. Ele preserva a estrutura do banco e as tabelas de perfis e cargos, mas substitui os dados operacionais. Faça um backup antes de executá-lo se houver dados que deseja manter. Os dados pessoais do cenário são fictícios. O campo `senha_hash` utiliza um valor demonstrativo que **não é uma senha válida e não permite autenticação**.
